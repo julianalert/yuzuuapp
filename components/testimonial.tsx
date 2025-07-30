@@ -10,6 +10,7 @@ export default function Testimonial({
     img: StaticImageData;
     name: string;
     username?: string;
+    profileUrl?: string;
     date: string;
     rating?: number;
     videoUrl?: string;
@@ -84,7 +85,9 @@ export default function Testimonial({
             <div>
               <a
                 className="text-sm font-medium text-gray-500/80 transition hover:text-gray-500"
-                href="#0"
+                href={testimonial.profileUrl || "#"}
+                target="_blank"
+                rel="noopener noreferrer"
                 tabIndex={cloned ? -1 : 0}
               >
                 {testimonial.username}

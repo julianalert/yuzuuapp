@@ -9,6 +9,7 @@ export default function TestimonialsCarousel() {
       img: TestimonialImg01,
       name: "Christophe L",
       username: "@LassuytChristop",
+      profileUrl: "https://twitter.com/LassuytChristop",
       date: "May 19, 2025",
       content:
         "I wasn’t sure this would work for us, but the first leads I got were spot on. People we got were a perfect fit for our community of web3 finance leaders. I reached out, got a 21% reply rate, and scaled our community from 500 CFOs to 2,000+ finance leaders. Super impressed so far!",
@@ -18,6 +19,7 @@ export default function TestimonialsCarousel() {
       img: TestimonialImg02,
       name: "Clement Bernard",
       username: "@Clement_brnrd",
+      profileUrl: "https://x.com/Clement_brnrd",
       date: "Apr 12, 2025",
       content:
         "We tried Apollo, Clay, even hired a VA. Nothing gave us leads this relevant, this consistently. With Yuzuu, I just open my inbox every morning and know who I’m reaching out to. Yuzuu is the only lead gen tool I actually enjoy using.",
@@ -27,6 +29,7 @@ export default function TestimonialsCarousel() {
       img: TestimonialImg03,
       name: "Emilie Flipot",
       username: "@emilieflipot",
+      profileUrl: "https://www.linkedin.com/in/emilie-flipot-410b88117",
       date: "Mar 04, 2025",
       content:
         "I used to spend hours trying to find good leads that weren’t total garbage. Yuzuu sends me the exact kind of prospects I want to talk to. It’s like having a mini growth team in my inbox.",
