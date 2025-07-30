@@ -10,6 +10,7 @@ interface AuthContextType {
   signUp: (data: SignUpData) => Promise<{ user: User | null; error: any }>
   signUpWithGoogle: () => Promise<{ error: any }>
   signIn: (data: SignInData) => Promise<{ user: User | null; error: any }>
+  signInWithGoogle: () => Promise<{ error: any }>
   signOut: () => Promise<{ error: any }>
 }
 
@@ -64,6 +65,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     return result
   }
 
+  const signInWithGoogle = async () => {
+    const result = await auth.signInWithGoogle()
+    return result
+  }
+
   const signOut = async () => {
     const result = await auth.signOut()
     if (!result.error) {
@@ -78,6 +84,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     signUp,
     signUpWithGoogle,
     signIn,
+    signInWithGoogle,
     signOut,
   }
 
