@@ -1,7 +1,7 @@
 import ProtectedRoute from '../../../components/auth/protected-route'
 import DashboardHeader from '../../../components/ui/dashboard-header'
 import PageIllustration from "@/components/page-illustration";
-import LeadsLoading from '../../../components/dashboard/leads-loading'
+import LatestLeads from '../../../components/dashboard/latest-leads'
 
 export const metadata = {
   title: "Dashboard - Yuzuu",
@@ -19,8 +19,8 @@ export default function Dashboard() {
         {/* Hero content */}
         <div className="pb-12 pt-32 md:pb-20 md:pt-40">
           {/* Section header */}
-          <div className="pb-12 text-center">
-            <LeadsLoading />
+          <div className="pb-12">
+            <LatestLeads />
           </div>
         </div>
       </div>
