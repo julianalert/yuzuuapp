@@ -1,5 +1,5 @@
 import ProtectedRoute from '../../../components/auth/protected-route'
-import UserProfile from '../../../components/auth/user-profile'
+import DashboardHeader from '../../../components/ui/dashboard-header'
 
 export const metadata = {
   title: "Dashboard - Simple",
@@ -9,12 +9,12 @@ export const metadata = {
 export default function Dashboard() {
   return (
     <ProtectedRoute>
-      <div className="min-h-screen bg-gray-50 py-12">
+      <DashboardHeader />
+      <div className="min-h-screen bg-gray-50 pt-24">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="bg-white rounded-lg shadow-sm p-6">
-            <div className="flex justify-between items-center mb-6">
+            <div className="mb-6">
               <h1 className="text-3xl font-bold text-gray-900">Dashboard</h1>
-              <UserProfile />
             </div>
             
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">

@@ -41,6 +41,26 @@ export const auth = {
     }
   },
 
+  // Sign up with Google OAuth
+  async signUpWithGoogle(): Promise<{ error: AuthError | null }> {
+    if (!supabase) {
+      return { error: { message: 'Supabase not configured', status: 500 } as AuthError }
+    }
+
+    try {
+      const { data, error } = await supabase.auth.signInWithOAuth({
+        provider: 'google',
+        options: {
+          redirectTo: `${window.location.origin}/auth/callback`,
+        }
+      })
+
+      return { error }
+    } catch (error) {
+      return { error: error as AuthError }
+    }
+  },
+
   // Sign in with email and password
   async signIn({ email, password }: SignInData): Promise<AuthResponse> {
     if (!supabase) {
