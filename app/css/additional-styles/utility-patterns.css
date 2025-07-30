@@ -1,7 +1,7 @@
 /* Buttons */
 .btn,
 .btn-sm {
-    @apply text-sm font-medium inline-flex items-center justify-center rounded-lg whitespace-nowrap transition-all;
+    @apply text-sm font-medium inline-flex items-center justify-center rounded-lg whitespace-nowrap transition-all cursor-pointer;
 }
 
 .btn {
@@ -10,6 +10,17 @@
 
 .btn-sm {
     @apply px-3 py-[5px] shadow-sm;
+}
+
+/* Global cursor pointer for clickable elements */
+button,
+[role="button"],
+input[type="submit"],
+input[type="button"],
+input[type="reset"],
+a,
+.clickable {
+    cursor: pointer;
 }
 
 /* Forms */

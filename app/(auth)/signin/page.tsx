@@ -9,8 +9,9 @@ export default function SignIn() {
   return (
     <>
       <>
-        <div className="mb-10">
+        <div className="mb-10 text-center">
           <h1 className="text-4xl font-bold">Sign in to your account</h1>
+          <p className="text-sm text-gray-500">Access your leads and start selling</p>
         </div>
         {/* Form */}
         <form>
@@ -54,7 +55,7 @@ export default function SignIn() {
           </div>
         </form>
         {/* Bottom link */}
-        <div className="mt-6 text-center">
+        <div className="mt-6 text-center hidden">
           <Link
             className="text-sm text-gray-700 underline hover:no-underline"
             href="/reset-password"
