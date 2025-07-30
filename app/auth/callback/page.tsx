@@ -25,6 +25,41 @@ export default function AuthCallback() {
         }
 
         if (data.session) {
+          // Create Loops contact for Google OAuth user
+          try {
+            const user = data.session.user;
+            console.log('Google OAuth user authenticated:', user);
+            
+            const fullNameParts = user.user_metadata?.full_name?.split(' ') || [];
+            const firstName = fullNameParts[0] || '';
+            const lastName = fullNameParts.slice(1).join(' ') || '';
+            
+            const websiteUrl = sessionStorage.getItem('websiteUrl');
+            
+            const loopsResponse = await fetch('/api/loops-google', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({
+                email: user.email,
+                firstName: firstName,
+                lastName: lastName,
+                website: websiteUrl,
+              }),
+            });
+            
+            const loopsResult = await loopsResponse.json();
+            
+            if (!loopsResult.success) {
+              console.error('Failed to create Loops contact for Google user:', loopsResult.error);
+            } else {
+              console.log('Successfully created Loops contact for Google user');
+            }
+          } catch (loopsError) {
+            console.error('Error creating Loops contact for Google user:', loopsError);
+          }
+          
           // User is authenticated, redirect to dashboard or signup with url if needed
           const websiteUrl = sessionStorage.getItem('websiteUrl')
           if (websiteUrl) {

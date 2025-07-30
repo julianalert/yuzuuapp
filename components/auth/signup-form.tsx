@@ -5,6 +5,7 @@ import { useRouter, useSearchParams } from 'next/navigation'
 import { useAuth } from '../../lib/auth-context'
 import { supabase } from '../../lib/supabase'
 
+
 async function triggerWebhook({ url, email, campaignId }: { url: string, email: string, campaignId: string }) {
   if (!campaignId) throw new Error('No campaignId to send to webhook');
   try {
@@ -42,11 +43,13 @@ export default function SignUpForm() {
   // If user is already authenticated (after Google OAuth), run campaign/webhook logic if needed
   useEffect(() => {
     const runCampaignLogic = async () => {
-      if (user && !campaignDone && urlFromQuery && !campaignInProgress.current) {
+      console.log('useEffect triggered:', { user: !!user, campaignDone, urlFromQuery, campaignInProgress: campaignInProgress.current });
+      
+      if (user && !campaignDone && !campaignInProgress.current) {
         campaignInProgress.current = true;
         try {
           console.log('Signup effect: user:', user, 'urlFromQuery:', urlFromQuery);
-          if (supabase) {
+          if (supabase && urlFromQuery) {
             // Check if campaign already exists for this user and url
             const { data: existing, error: existingError } = await supabase
               .from('campaign')
@@ -92,11 +95,65 @@ export default function SignUpForm() {
               console.error('No campaign id found for webhook');
             }
           } else {
-            console.log('No supabase, skipping campaign creation.');
+            console.log('No supabase or no URL, skipping campaign creation.');
           }
         } finally {
+          console.log('Campaign logic completed, setting campaignDone to true');
           setCampaignDone(true);
           campaignInProgress.current = false;
+          
+          // Create contact in Loops.so
+          if (user && user.email) {
+            try {
+              console.log('User data for Loops:', user);
+              console.log('User metadata:', user.user_metadata);
+              
+              // Try different ways to get the name from Google OAuth
+              let firstName = '';
+              let lastName = '';
+              
+              if (user.user_metadata?.full_name) {
+                const fullNameParts = user.user_metadata.full_name.split(' ');
+                firstName = fullNameParts[0] || '';
+                lastName = fullNameParts.slice(1).join(' ') || '';
+              } else if (user.user_metadata?.name) {
+                const fullNameParts = user.user_metadata.name.split(' ');
+                firstName = fullNameParts[0] || '';
+                lastName = fullNameParts.slice(1).join(' ') || '';
+              } else if (user.user_metadata?.first_name && user.user_metadata?.last_name) {
+                firstName = user.user_metadata.first_name;
+                lastName = user.user_metadata.last_name;
+              }
+              
+              console.log('Extracted name:', { firstName, lastName });
+              
+              const loopsResponse = await fetch('/api/loops', {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                  email: user.email,
+                  firstName: firstName,
+                  lastName: lastName,
+                  website: urlFromQuery,
+                  signupDate: new Date().toISOString(),
+                  source: 'google_oauth_signup',
+                }),
+              });
+              
+              const loopsResult = await loopsResponse.json();
+              
+              if (!loopsResult.success) {
+                console.error('Failed to create Loops contact:', loopsResult.error);
+              } else {
+                console.log('Successfully created Loops contact');
+              }
+            } catch (loopsError) {
+              console.error('Error creating Loops contact:', loopsError);
+            }
+          }
+          
           router.push('/dashboard');
         }
       }
@@ -125,8 +182,46 @@ export default function SignUpForm() {
       const result = await signUpWithGoogle()
       if (result.error) {
         setError(result.error.message || 'An error occurred during Google sign up')
+      } else {
+        // Force a delay to ensure user state is updated, then create Loops contact
+        setTimeout(async () => {
+          const currentUser = await supabase?.auth.getUser()
+          if (currentUser?.data?.user) {
+            console.log('Creating Loops contact for Google user:', currentUser.data.user)
+            
+            try {
+              const fullNameParts = currentUser.data.user.user_metadata?.full_name?.split(' ') || [];
+              const firstName = fullNameParts[0] || '';
+              const lastName = fullNameParts.slice(1).join(' ') || '';
+              
+              const loopsResponse = await fetch('/api/loops', {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                  email: currentUser.data.user.email,
+                  firstName: firstName,
+                  lastName: lastName,
+                  website: urlFromQuery,
+                  signupDate: new Date().toISOString(),
+                  source: 'google_oauth_signup',
+                }),
+              });
+              
+              const loopsResult = await loopsResponse.json();
+              
+              if (!loopsResult.success) {
+                console.error('Failed to create Loops contact:', loopsResult.error);
+              } else {
+                console.log('Successfully created Loops contact for Google user');
+              }
+            } catch (loopsError) {
+              console.error('Error creating Loops contact for Google user:', loopsError);
+            }
+          }
+        }, 2000); // 2 second delay
       }
-      // After Google signup, user will be authenticated and useEffect will run
     } catch (err) {
       setError('An unexpected error occurred during Google sign up')
     } finally {
@@ -160,6 +255,38 @@ export default function SignUpForm() {
       if (result.error) {
         setError(result.error.message || 'An error occurred during sign up')
       } else {
+        // Create contact in Loops.so for email/password signup
+        try {
+          const fullNameParts = formData.fullName.split(' ');
+          const firstName = fullNameParts[0] || '';
+          const lastName = fullNameParts.slice(1).join(' ') || '';
+          
+          const loopsResponse = await fetch('/api/loops', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              email: formData.email,
+              firstName: firstName,
+              lastName: lastName,
+              website: urlFromQuery,
+              signupDate: new Date().toISOString(),
+              source: 'website_signup',
+            }),
+          });
+          
+          const loopsResult = await loopsResponse.json();
+          
+          if (!loopsResult.success) {
+            console.error('Failed to create Loops contact:', loopsResult.error);
+          } else {
+            console.log('Successfully created Loops contact');
+          }
+        } catch (loopsError) {
+          console.error('Error creating Loops contact:', loopsError);
+        }
+        
         // Campaign creation and webhook will be handled by useEffect when user state updates
         setSuccess(true)
         setTimeout(() => {
