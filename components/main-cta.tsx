@@ -13,44 +13,11 @@ export default function MainCTA() {
     e.preventDefault();
     if (websiteUrl.trim() && !isSubmitting) {
       setIsSubmitting(true);
-      
       try {
-        console.log('Attempting to save website URL:', websiteUrl.trim());
-        
-        // Only save to Supabase if client is available
-        if (supabase) {
-          // Save the website URL to Supabase campaign table
-          const { data, error } = await supabase
-            .from('campaign')
-            .insert([
-              {
-                url: websiteUrl.trim(),
-                email: 'pending@signup.com' // Placeholder - will be updated when user completes signup
-              }
-            ])
-            .select();
-
-          if (error) {
-            console.error('Error saving website URL:', error);
-            console.error('Error details:', {
-              message: error.message,
-              details: error.details,
-              hint: error.hint,
-              code: error.code
-            });
-            // Still redirect even if save fails
-          } else {
-            console.log('Website URL saved to campaign:', data);
-          }
-        } else {
-          console.log('Supabase not available, skipping save');
-        }
-
-        // Redirect to signup page
-        router.push('/signup');
+        // Redirect to signup page with url as query string
+        router.push(`/signup?url=${encodeURIComponent(websiteUrl.trim())}`);
       } catch (error) {
         console.error('Unexpected error:', error);
-        // Still redirect even if there's an error
         router.push('/signup');
       } finally {
         setIsSubmitting(false);

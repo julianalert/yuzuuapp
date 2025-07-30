@@ -1,9 +1,25 @@
+'use client'
+
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import Logo from "./logo";
 import Dropdown from "@/components/dropdown";
 import MobileMenu from "./mobile-menu";
+import { useAuth } from "@/lib/auth-context";
 
 export default function DashboardHeader() {
+  const { signOut } = useAuth();
+  const router = useRouter();
+
+  const handleSignOut = async () => {
+    try {
+      await signOut();
+      router.push('/signin');
+    } catch (error) {
+      console.error('Error signing out:', error);
+    }
+  };
+
   return (
     <header className="fixed top-2 z-30 w-full md:top-6">
       <div className="mx-auto max-w-6xl px-4 sm:px-6">
@@ -22,6 +38,14 @@ export default function DashboardHeader() {
               >
                 Settings
               </Link>
+            </li>
+            <li className="px-3 py-1">
+              <button
+                onClick={handleSignOut}
+                className="flex items-center text-gray-700 transition hover:text-gray-900 cursor-pointer"
+              >
+                Sign Out
+              </button>
             </li>
             <li>
               <Link

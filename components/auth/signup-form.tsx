@@ -1,10 +1,32 @@
 'use client'
 
-import { useState } from 'react'
-import { useRouter } from 'next/navigation'
+import { useState, useEffect, useRef } from 'react'
+import { useRouter, useSearchParams } from 'next/navigation'
 import { useAuth } from '../../lib/auth-context'
+import { supabase } from '../../lib/supabase'
+
+async function triggerWebhook({ url, email, campaignId }: { url: string, email: string, campaignId: string }) {
+  if (!campaignId) throw new Error('No campaignId to send to webhook');
+  try {
+    await fetch('https://notanothermarketer.app.n8n.cloud/webhook/start-campaign', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ url, email, campaignId })
+    })
+  } catch (err) {
+    console.error('Webhook error:', err)
+  }
+}
 
 export default function SignUpForm() {
+  const searchParams = useSearchParams();
+  const urlFromQuery = searchParams.get('url') || '';
+  const { user, signUp, signUpWithGoogle } = useAuth();
+  const router = useRouter();
+
+  // DEBUG: Log user on every render
+  console.log('SignUpForm render: user:', user);
+
   const [formData, setFormData] = useState({
     fullName: '',
     email: '',
@@ -14,9 +36,73 @@ export default function SignUpForm() {
   const [googleLoading, setGoogleLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [success, setSuccess] = useState(false)
-  
-  const { signUp, signUpWithGoogle } = useAuth()
-  const router = useRouter()
+  const [campaignDone, setCampaignDone] = useState(false)
+  const campaignInProgress = useRef(false)
+
+  // If user is already authenticated (after Google OAuth), run campaign/webhook logic if needed
+  useEffect(() => {
+    const runCampaignLogic = async () => {
+      if (user && !campaignDone && urlFromQuery && !campaignInProgress.current) {
+        campaignInProgress.current = true;
+        try {
+          console.log('Signup effect: user:', user, 'urlFromQuery:', urlFromQuery);
+          if (supabase) {
+            // Check if campaign already exists for this user and url
+            const { data: existing, error: existingError } = await supabase
+              .from('campaign')
+              .select('id')
+              .eq('url', urlFromQuery)
+              .eq('user_id', user.id)
+              .order('created_at', { ascending: false })
+              .limit(1);
+            let campaignId = existing && existing[0] && existing[0].id ? existing[0].id : null;
+            if (existingError) {
+              console.error('Error checking for existing campaign:', existingError);
+            }
+            if (!campaignId) {
+              // Create campaign if not exists
+              console.log('Creating campaign for user:', user.id, 'url:', urlFromQuery);
+              const { data, error: campaignError } = await supabase.from('campaign').insert([
+                {
+                  url: urlFromQuery,
+                  email: user.email,
+                  user_id: user.id,
+                }
+              ]).select();
+              if (campaignError) {
+                setError('Could not create campaign');
+                console.error('Campaign creation error:', campaignError);
+                return;
+              }
+              campaignId = data && data[0] && data[0].id ? data[0].id : null;
+              console.log('Created campaign, id:', campaignId);
+            } else {
+              console.log('Campaign already exists, id:', campaignId);
+            }
+            if (campaignId) {
+              try {
+                console.log('Triggering webhook for campaignId:', campaignId);
+                await triggerWebhook({ url: urlFromQuery, email: user.email!, campaignId });
+              } catch (webhookErr) {
+                setError('Webhook error: ' + (webhookErr instanceof Error ? webhookErr.message : webhookErr));
+                console.error('Webhook error:', webhookErr);
+              }
+            } else {
+              setError('Could not find campaign id to send to webhook');
+              console.error('No campaign id found for webhook');
+            }
+          } else {
+            console.log('No supabase, skipping campaign creation.');
+          }
+        } finally {
+          setCampaignDone(true);
+          campaignInProgress.current = false;
+          router.push('/dashboard');
+        }
+      }
+    };
+    runCampaignLogic();
+  }, [user, urlFromQuery, campaignDone, router]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target
@@ -24,21 +110,23 @@ export default function SignUpForm() {
       ...prev,
       [name]: value
     }))
-    // Clear error when user starts typing
     if (error) setError(null)
   }
 
   const handleGoogleSignUp = async () => {
     setGoogleLoading(true)
     setError(null)
-
     try {
-      const result = await signUpWithGoogle()
+      // Store the website URL in session storage before Google OAuth
+      if (urlFromQuery) {
+        sessionStorage.setItem('websiteUrl', urlFromQuery)
+      }
       
+      const result = await signUpWithGoogle()
       if (result.error) {
         setError(result.error.message || 'An error occurred during Google sign up')
       }
-      // Google OAuth will redirect automatically, so no need to handle success here
+      // After Google signup, user will be authenticated and useEffect will run
     } catch (err) {
       setError('An unexpected error occurred during Google sign up')
     } finally {
@@ -57,7 +145,6 @@ export default function SignUpForm() {
       setLoading(false)
       return
     }
-
     if (formData.password.length < 6) {
       setError('Password must be at least 6 characters long')
       setLoading(false)
@@ -70,12 +157,11 @@ export default function SignUpForm() {
         password: formData.password,
         fullName: formData.fullName,
       })
-
       if (result.error) {
         setError(result.error.message || 'An error occurred during sign up')
       } else {
+        // Campaign creation and webhook will be handled by useEffect when user state updates
         setSuccess(true)
-        // Redirect to dashboard after successful signup
         setTimeout(() => {
           router.push('/dashboard')
         }, 2000)
@@ -85,6 +171,18 @@ export default function SignUpForm() {
     } finally {
       setLoading(false)
     }
+  }
+
+  if (user && !campaignDone) {
+    // Show nothing while campaign logic runs
+    return (
+      <div className="flex items-center justify-center min-h-[300px]">
+        <div className="text-center">
+          <div className="w-8 h-8 border-4 border-blue-500 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+          <p className="text-gray-600">Finishing sign up...</p>
+        </div>
+      </div>
+    )
   }
 
   if (success) {
@@ -108,10 +206,7 @@ export default function SignUpForm() {
         <h1 className="text-4xl font-bold">You're one step away</h1>
         <p className="text-sm text-gray-500">Sign up to get your free leads</p>
       </div>
-      
-      {/* Form */}
       <form onSubmit={handleSubmit}>
-        {/* GitHub button at the top */}
         <div className="mb-6">
           <button 
             type="button"
@@ -132,30 +227,20 @@ export default function SignUpForm() {
                   <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
                   <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
                 </svg>
-                Continue with Google
+                Sign up with Google
               </>
             )}
           </button>
         </div>
-        
-        {/* Or divider */}
         <div className="text-center text-sm italic text-gray-400 mb-6">Or</div>
-        
-        {/* Error message */}
         {error && (
           <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-md">
             <p className="text-sm text-red-600">{error}</p>
           </div>
         )}
-        
         <div className="space-y-4">
           <div>
-            <label
-              className="mb-1 block text-sm font-medium text-gray-700"
-              htmlFor="fullName"
-            >
-              Full name
-            </label>
+            <label className="mb-1 block text-sm font-medium text-gray-700" htmlFor="fullName">Full name</label>
             <input
               id="fullName"
               name="fullName"
@@ -169,12 +254,7 @@ export default function SignUpForm() {
             />
           </div>
           <div>
-            <label
-              className="mb-1 block text-sm font-medium text-gray-700"
-              htmlFor="email"
-            >
-              Email
-            </label>
+            <label className="mb-1 block text-sm font-medium text-gray-700" htmlFor="email">Email</label>
             <input
               id="email"
               name="email"
@@ -188,12 +268,7 @@ export default function SignUpForm() {
             />
           </div>
           <div>
-            <label
-              className="mb-1 block text-sm font-medium text-gray-700"
-              htmlFor="password"
-            >
-              Password
-            </label>
+            <label className="mb-1 block text-sm font-medium text-gray-700" htmlFor="password">Password</label>
             <input
               id="password"
               name="password"
@@ -225,15 +300,9 @@ export default function SignUpForm() {
           </button>
         </div>
       </form>
-
-      {/* Bottom link */}
       <div className="mt-6 text-center">
         <p className="text-sm text-gray-500">
-          By signing up, you agree to the{" "}
-          Terms of Service{" "}
-          and{" "}
-          Privacy Policy
-          .
+          By signing up, you agree to the Terms of Service and Privacy Policy.
         </p>
       </div>
     </>

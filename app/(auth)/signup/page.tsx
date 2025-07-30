@@ -1,5 +1,4 @@
 import SignUpForm from '../../../components/auth/signup-form'
-import AuthRedirect from '../../../components/auth/auth-redirect'
 
 export const metadata = {
   title: "Sign Up - Simple",
@@ -7,9 +6,5 @@ export const metadata = {
 };
 
 export default function SignUp() {
-  return (
-    <AuthRedirect>
-      <SignUpForm />
-    </AuthRedirect>
-  )
+  return <SignUpForm />
 }
