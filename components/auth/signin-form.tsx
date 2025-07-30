@@ -2,8 +2,8 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import Link from 'next/link'
 import { useAuth } from '../../lib/auth-context'
+import PasswordResetForm from './password-reset-form'
 
 export default function SignInForm() {
   const [formData, setFormData] = useState({
@@ -12,6 +12,7 @@ export default function SignInForm() {
   })
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [showReset, setShowReset] = useState(false)
   
   const { signIn } = useAuth()
   const router = useRouter()
@@ -22,7 +23,6 @@ export default function SignInForm() {
       ...prev,
       [name]: value
     }))
-    // Clear error when user starts typing
     if (error) setError(null)
   }
 
@@ -31,7 +31,6 @@ export default function SignInForm() {
     setLoading(true)
     setError(null)
 
-    // Basic validation
     if (!formData.email.trim() || !formData.password.trim()) {
       setError('Email and password are required')
       setLoading(false)
@@ -47,7 +46,6 @@ export default function SignInForm() {
       if (result.error) {
         setError(result.error.message || 'Invalid email or password')
       } else {
-        // Redirect to dashboard after successful signin
         router.push('/dashboard')
       }
     } catch (err) {
@@ -57,22 +55,22 @@ export default function SignInForm() {
     }
   }
 
+  if (showReset) {
+    return <PasswordResetForm onBack={() => setShowReset(false)} />
+  }
+
   return (
     <>
       <div className="mb-10 text-center">
         <h1 className="text-4xl font-bold">Sign in to your account</h1>
         <p className="text-sm text-gray-500">Access your leads and start selling</p>
       </div>
-      
-      {/* Form */}
       <form onSubmit={handleSubmit}>
-        {/* Error message */}
         {error && (
           <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-md">
             <p className="text-sm text-red-600">{error}</p>
           </div>
         )}
-        
         <div className="space-y-4">
           <div>
             <label
@@ -131,15 +129,14 @@ export default function SignInForm() {
           </button>
         </div>
       </form>
-      
-      {/* Bottom link */}
       <div className="mt-6 text-center">
-        <Link
+        <button
+          type="button"
           className="text-sm text-gray-700 underline hover:no-underline"
-          href="/reset-password"
+          onClick={() => setShowReset(true)}
         >
-          Forgot password
-        </Link>
+          Forgot password?
+        </button>
       </div>
     </>
   )
