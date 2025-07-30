@@ -37,7 +37,7 @@ export default function LargeTestimonial() {
               <span className="text-gray-700">Julien D.</span>{" "}
               <span className="text-gray-400">/</span>{" "}
               <a className="text-blue-500" href="https://request.finance">
-                Head of Growth at Request Finance
+                Head of Growth at Request
               </a>
             </div>
           </div>
