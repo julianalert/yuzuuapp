@@ -80,8 +80,8 @@ export default async function SinglePost(
                 <CustomMDX source={post.content} />
               </div>
             </article>
-            {/* Newsletter form */}
-            <Newsletter />
+            {/* Newsletter form
+            <Newsletter /> */}
           </div>
           {/* Right sidebar */}
           <PostNav />

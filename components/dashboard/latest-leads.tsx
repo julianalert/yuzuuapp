@@ -53,6 +53,10 @@ export default function LatestLeads() {
   const [campaign, setCampaign] = useState<Campaign | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  const [displayCount, setDisplayCount] = useState(20)
+  const [hasMoreLeads, setHasMoreLeads] = useState(false)
+  const [loadingMore, setLoadingMore] = useState(false)
+  const [totalSentLeads, setTotalSentLeads] = useState(0)
 
   useEffect(() => {
     const fetchLatestLeads = async () => {
@@ -92,7 +96,7 @@ export default function LatestLeads() {
           .eq('campaign_id', latestCampaign.id)
           .eq('sent', 'yes')
           .order('created_at', { ascending: false })
-          .limit(10) // Show only the latest 10 leads
+          .limit(displayCount)
 
         if (leadsError) {
           console.error('Error fetching leads:', leadsError)
@@ -101,7 +105,16 @@ export default function LatestLeads() {
           return
         }
 
+        // Check if there are more leads available
+        const { count: totalLeads } = await supabase
+          .from('leads')
+          .select('*', { count: 'exact', head: true })
+          .eq('campaign_id', latestCampaign.id)
+          .eq('sent', 'yes')
+
         setLeads(leadsData || [])
+        setTotalSentLeads(totalLeads || 0)
+        setHasMoreLeads(totalLeads ? totalLeads > displayCount : false)
         setLoading(false)
       } catch (error) {
         console.error('Error fetching latest leads:', error)
@@ -111,7 +124,45 @@ export default function LatestLeads() {
     }
 
     fetchLatestLeads()
-  }, [user])
+  }, [user, displayCount])
+
+  const loadMoreLeads = async () => {
+    if (!campaign || !supabase) return
+
+    setLoadingMore(true)
+    const newDisplayCount = displayCount + 20
+
+    try {
+      const { data: additionalLeads, error: leadsError } = await supabase
+        .from('leads')
+        .select('*')
+        .eq('campaign_id', campaign.id)
+        .eq('sent', 'yes')
+        .order('created_at', { ascending: false })
+        .limit(newDisplayCount)
+
+      if (leadsError) {
+        console.error('Error fetching additional leads:', leadsError)
+        return
+      }
+
+      // Check if there are more leads available
+      const { count: totalLeads } = await supabase
+        .from('leads')
+        .select('*', { count: 'exact', head: true })
+        .eq('campaign_id', campaign.id)
+        .eq('sent', 'yes')
+
+      setLeads(additionalLeads || [])
+      setDisplayCount(newDisplayCount)
+      setTotalSentLeads(totalLeads || 0)
+      setHasMoreLeads(totalLeads ? totalLeads > newDisplayCount : false)
+    } catch (error) {
+      console.error('Error loading more leads:', error)
+    } finally {
+      setLoadingMore(false)
+    }
+  }
 
   if (loading) {
     return (
@@ -168,10 +219,10 @@ export default function LatestLeads() {
     <div className="mx-auto max-w-6xl">
       <div className="mb-8">
         <h2 className="text-2xl font-bold text-gray-900 mb-2">
-          Latest Leads from {displayUrl}
+        {totalSentLeads} Leads from {displayUrl}
         </h2>
         <p className="text-gray-600">
-          Showing {leads.length} most recent leads from your latest campaign
+          Showing {leads.length} of {totalSentLeads} leads from your latest campaign
         </p>
       </div>
 
@@ -274,11 +325,16 @@ export default function LatestLeads() {
         </div>
       </div>
 
-      {leads.length >= 10 && (
-        <div className="mt-6 text-center">
-          <p className="text-gray-600">
-            Showing the 10 most recent leads. Check your email for the complete list.
-          </p>
+      {hasMoreLeads && (
+        <div className="mt-12 text-center">
+          <button 
+            onClick={loadMoreLeads}
+            disabled={loadingMore}
+            className="btn-sm min-w-[220px] bg-gray-800 py-1.5 text-gray-200 shadow-sm hover:bg-gray-900 disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            {loadingMore ? 'Loading...' : 'Load more'} {" "}
+            <span className="ml-2 tracking-normal text-gray-500">↓</span>
+          </button>
         </div>
       )}
     </div>

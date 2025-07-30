@@ -13,44 +13,29 @@ export default function Header() {
             <Logo />
           </div>
 
-          {/* 
+           
           <nav className="hidden md:flex md:grow">
         
             <ul className="flex grow flex-wrap items-center justify-center gap-4 text-sm lg:gap-8">
               <li className="px-3 py-1">
                 <Link
-                  href="/pricing"
+                  href="/#features"
                   className="flex items-center text-gray-700 transition hover:text-gray-900"
                 >
-                  Pricing
+                  Features
                 </Link>
               </li>
               <li className="px-3 py-1">
                 <Link
-                  href="/customers"
+                  href="/#testimonials"
                   className="flex items-center text-gray-700 transition hover:text-gray-900"
                 >
-                  Customers
+                  Testimonials
                 </Link>
               </li>
-              <li className="px-3 py-1">
-                <Link
-                  href="/blog"
-                  className="flex items-center text-gray-700 transition hover:text-gray-900"
-                >
-                  Blog
-                </Link>
-              </li>
-              <li className="px-3 py-1">
-                <Link
-                  href="/documentation"
-                  className="flex items-center text-gray-700 transition hover:text-gray-900"
-                >
-                  Docs
-                </Link>
-              </li>
+             
               
-              <Dropdown title="Extra">
+              {/*<Dropdown title="Extra">
                
                 <li>
                   <Link
@@ -68,9 +53,9 @@ export default function Header() {
                     Apps
                   </Link>
                 </li>
-              </Dropdown>
-            </ul> Desktop menu links 
-          </nav> */}
+              </Dropdown>*/}
+            </ul>  
+          </nav> 
 
           
           <ul className="flex flex-1 items-center justify-end gap-3">
@@ -100,7 +85,7 @@ export default function Header() {
             </li>
           </ul>
 
-          {/*<MobileMenu />*/}
+          <MobileMenu />
         </div>
       </div>
     </header>
