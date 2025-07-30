@@ -1,12 +1,11 @@
 'use client'
 
 import { useEffect } from 'react'
-import { useRouter, useSearchParams } from 'next/navigation'
+import { useRouter } from 'next/navigation'
 import { supabase } from '@/lib/supabase'
 
 export default function AuthCallback() {
   const router = useRouter()
-  const searchParams = useSearchParams()
 
   useEffect(() => {
     const handleAuthCallback = async () => {
@@ -26,19 +25,15 @@ export default function AuthCallback() {
         }
 
         if (data.session) {
-          // Check if there's a website URL in the session storage (from homepage)
+          // User is authenticated, redirect to dashboard or signup with url if needed
           const websiteUrl = sessionStorage.getItem('websiteUrl')
-          
           if (websiteUrl) {
-            // Clear the stored URL and redirect to signup with the URL
             sessionStorage.removeItem('websiteUrl')
             router.push(`/signup?url=${encodeURIComponent(websiteUrl)}`)
           } else {
-            // No website URL, redirect to dashboard
             router.push('/dashboard')
           }
         } else {
-          // No session, redirect to signin
           router.push('/signin')
         }
       } catch (error) {
