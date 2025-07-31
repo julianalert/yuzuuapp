@@ -1,6 +1,6 @@
 export const metadata = {
-  title: "Home - Simple",
-  description: "Page description",
+  title: "Find Clients For Your B2B SaaS - Yuzuu",
+  description: "Get 10 qualified prospects in your inbox every morning showing high buying intent for your offer. Perfectly matched to your ICP. 100% free.",
 };
 
 import MainHero from "@/components/main-hero";
