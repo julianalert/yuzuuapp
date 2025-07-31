@@ -3,8 +3,8 @@ import PageIllustration from "@/components/page-illustration";
 import PostItem from "@/components/post-item";
 
 export const metadata = {
-  title: "Blog - Simple",
-  description: "Page description",
+  title: "Blog - Yuzuu.co",
+  description: "We help you find the best leads for your business.",
 };
 
 export default function Blog() {
