@@ -27,7 +27,7 @@ export default function FeaturesHome() {
             </h2>
             <p className="text-lg text-gray-700">
             Yuzuu delivers 3 handpicked, high-intent leads straight to your inbox every morning. 
-            <br />You focus on closing, we handle the prospecting.
+            <br />You focus on closing, we make sure you talk to the right people.
             </p>
           </div>
           {/* Planet */}
