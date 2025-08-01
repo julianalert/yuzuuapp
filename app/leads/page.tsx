@@ -6,8 +6,8 @@ export const metadata = {
   description: "Your leads",
 };
 
-export default function Leads({ searchParams }: { searchParams: { campaignId?: string } }) {
-  const { campaignId } = searchParams;
+export default async function Leads({ searchParams }: { searchParams: Promise<{ campaignId?: string }> }) {
+  const { campaignId } = await searchParams;
 
   if (!campaignId) {
     return (
