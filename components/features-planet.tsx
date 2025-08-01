@@ -5,6 +5,9 @@ import PlanetTagImg01 from "@/public/images/planet-tag-01.png";
 import PlanetTagImg02 from "@/public/images/planet-tag-02.png";
 import PlanetTagImg03 from "@/public/images/planet-tag-03.png";
 import PlanetTagImg04 from "@/public/images/planet-tag-04.png";
+import FeatureImg01 from "@/public/images/features-02-overlay-01.png";
+import FeatureImg02 from "@/public/images/features-02-overlay-02.png";
+import FeatureImg03 from "@/public/images/features-02-overlay-03.png";
 
 export default function FeaturesPlanet() {
   return (
@@ -14,17 +17,83 @@ export default function FeaturesPlanet() {
           {/* Section header */}
           <div className="mx-auto max-w-3xl pb-16 text-center md:pb-20">
             <h2 className="text-3xl font-bold text-gray-200 md:text-4xl">
-            Tired of wasting hours chasing leads who’ll never buy?
+            You’re spending hours every week trying to find leads 
             </h2>
             <p className="text-lg text-gray-500 pt-4">
-            You know that without consistent, qualified leads, nothing moves...
-<br />
-but finding qualified prospects is slow, painful, and almost never leads to conversions.
-<br />
-👉 Stop spending hours researching, start selling 👈
+            You bounce between LinkedIn, Apollo, scraping tools, and spreadsheets. 
+            <br />Only to end up with cold, low-quality prospects that go nowhere. 
             </p>
           </div>
-          {/* Planet */}
+          {/* Illustration  */}
+          <div
+            className="group relative mx-auto mb-16 flex w-full max-w-[500px] justify-center md:mb-20"
+            data-aos="zoom-y-out"
+          >
+            <div className="absolute bottom-0 -z-10" aria-hidden="true">
+              <div className="h-80 w-80 rounded-full bg-blue-500 opacity-70 blur-[160px] will-change-[filter]" />
+            </div>
+            <div className="aspect-video w-full -rotate-1 rounded-2xl bg-gray-900 px-5 py-3 shadow-xl transition duration-300 group-hover:-rotate-0">
+              <div className="relative mb-8 flex items-center justify-between before:block before:h-[9px] before:w-[41px] before:bg-[length:16px_9px] before:[background-image:radial-gradient(circle_at_4.5px_4.5px,var(--color-gray-600)_4.5px,transparent_0)] after:w-[41px]">
+                <span className="text-[13px] font-medium text-white">
+                  Your cold outreach today
+                </span>
+              </div>
+              <div className="font-mono text-sm text-gray-500 blur-xs will-change-[filter] transition duration-300 group-hover:blur-none [&_span]:opacity-0">
+                <span className="animate-[code-1_10s_infinite] text-gray-200">
+                  Hi Mary,
+                </span>{" "}
+                <span className="animate-[code-2_10s_infinite]">
+                  wanna buy my awesome tool?
+                </span>
+                <br />
+                <span className="animate-[code-3_10s_infinite]">
+                  I swear it's the best thing since sliced bread.
+                </span>{" "}
+                <span className="animate-[code-4_10s_infinite]">
+                  You will love it.
+                </span>
+                <br />
+                <br />
+                <span className="animate-[code-5_10s_infinite] text-gray-200">
+                  Yes, you will love it.
+                </span>
+                <br />
+                <span className="animate-[code-6_10s_infinite]">
+                  Trust me.
+                </span>
+              </div>
+            </div>
+            <div className="absolute top-16 left-1/2 transform -translate-x-1/2">
+              <div className="pointer-events-none mb-[7%] translate-y-2 transition duration-300 group-hover:translate-y-0 group-hover:opacity-0">
+                <Image
+                  className="-rotate-2"
+                  src={FeatureImg01}
+                  width={500}
+                  height={72}
+                  alt="Overlay 01"
+                />
+              </div>
+              <div className="delay-50 pointer-events-none mb-[3.5%] translate-y-2 transition duration-300 group-hover:translate-y-0 group-hover:opacity-0">
+                <Image src={FeatureImg02} width={500} alt="Overlay 02" />
+              </div>
+              <div className="pointer-events-none translate-y-2 transition delay-100 duration-300 group-hover:translate-y-0 group-hover:opacity-0">
+                <Image
+                  className="-rotate-1"
+                  src={FeatureImg03}
+                  width={500}
+                  height={91}
+                  alt="Overlay 03"
+                />
+              </div>
+            </div>
+          </div>
+          {/* Section bottom */}
+          <div className="mx-auto max-w-3xl pb-16 text-center md:pb-4">
+            <p className="text-lg text-gray-500 pt-4">
+            😬 Meanwhile, your actual work of selling, growing, building is on hold 😬
+            </p>
+          </div>
+          {/* Planet 
           <div className="pb-16 md:pb-20" data-aos="zoom-y-out">
             <div className="text-center">
               <div className="relative inline-flex rounded-full before:absolute before:inset-0 before:-z-10 before:scale-[.85] before:animate-[pulse_4s_cubic-bezier(.4,0,.6,1)_infinite] before:bg-linear-to-b before:from-blue-900 before:to-sky-700/50 before:blur-3xl after:absolute after:inset-0 after:rounded-[inherit] after:[background:radial-gradient(closest-side,var(--color-blue-500),transparent)]">
@@ -77,7 +146,17 @@ but finding qualified prospects is slow, painful, and almost never leads to conv
               </div>
             </div>
           </div>
-          {/* Grid */}
+          <div className="mx-auto max-w-3xl pb-16 text-center md:pb-20">
+            <h2 className="text-3xl font-bold text-gray-200 md:text-4xl">
+            The right leads, at the right time. 
+            </h2>
+            <p className="text-lg text-gray-500 pt-4">
+            You bounce between LinkedIn, Apollo, scraping tools, and spreadsheets. 
+            <br />Only to end up with cold, low-quality prospects that go nowhere. 
+            <br />Meanwhile, your actual work (selling, growing, building) is on hold.
+            </p>
+          </div>
+          {/* Grid 
           <div className="grid overflow-hidden sm:grid-cols-2 lg:grid-cols-3 *:relative *:p-6 *:before:absolute *:before:bg-gray-800 *:before:[block-size:100vh] *:before:[inline-size:1px] *:before:[inset-block-start:0] *:before:[inset-inline-start:-1px] *:after:absolute *:after:bg-gray-800 *:after:[block-size:1px] *:after:[inline-size:100vw] *:after:[inset-block-start:-1px] *:after:[inset-inline-start:0] md:*:p-10">
             <article>
               <h3 className="mb-2 flex items-center space-x-2 font-medium text-gray-200">
@@ -105,7 +184,7 @@ but finding qualified prospects is slow, painful, and almost never leads to conv
                 >
                   <path d="M14.29 2.614a1 1 0 0 0-1.58-1.228L6.407 9.492l-3.199-3.2a1 1 0 1 0-1.414 1.415l4 4a1 1 0 0 0 1.496-.093l7-9ZM1 14a1 1 0 1 0 0 2h14a1 1 0 1 0 0-2H1Z" />
                 </svg>
-                <span>Receive leads every morning</span>
+                <span>Wake up to leads already qualified</span>
               </h3>
               <p className="text-[15px] text-gray-400">
               You receive a daily email with qualified & enriched lead tailored to your offer.
@@ -132,7 +211,7 @@ but finding qualified prospects is slow, painful, and almost never leads to conv
               </p>
             </article>
              
-          </div>
+          </div>*/}
         </div>
       </div>
     </section>

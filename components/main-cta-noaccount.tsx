@@ -91,11 +91,9 @@ export default function MainCTANoAccount() {
             },
             body: JSON.stringify({
               email: email.trim(),
-              firstName: '',
-              lastName: '',
               website: websiteUrl.trim(),
-              signupDate: new Date().toISOString(),
               source: 'homepage_cta',
+              campaignId: campaignId,
             }),
           });
           

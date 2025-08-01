@@ -9,15 +9,17 @@ import LargeTestimonial from "@/components/large-testimonial";
 import FeaturesPlanet from "@/components/features-planet";
 import Features from "@/components/features-home";
 import TestimonialsCarousel from "@/components/testimonials-carousel";
+import BusinessCategories from "@/components/business-categories";
 import Cta from "@/components/cta";
 
 export default function Home() {
   return (
     <>
       <MainHero />
-      {/* <BusinessCategories /> */}
+      
       <LargeTestimonial />
       <FeaturesPlanet />
+      <Features />
       {/*<Features />*/}
       <TestimonialsCarousel />
       <Cta />

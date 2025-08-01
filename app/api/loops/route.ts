@@ -4,11 +4,9 @@ const LOOPS_API_KEY = process.env.LOOPS_API_KEY;
 
 interface LoopsContact {
   email: string;
-  firstName?: string;
-  lastName?: string;
   website?: string;
-  signupDate?: string;
   source?: string;
+  campaignId?: string;
 }
 
 export async function POST(request: NextRequest) {
@@ -33,14 +31,10 @@ export async function POST(request: NextRequest) {
       },
       body: JSON.stringify({
         email: contact.email,
-        firstName: contact.firstName || '',
-        lastName: contact.lastName || '',
         subscribed: true,
-        userProperties: {
-          website: contact.website || '',
-          signupDate: contact.signupDate || new Date().toISOString(),
-          source: contact.source || 'website_signup',
-        },
+        website: contact.website || '',
+        source: contact.source || 'website_signup',
+        Campaign_id: contact.campaignId || '',
       }),
     });
 
