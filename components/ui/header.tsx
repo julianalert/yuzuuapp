@@ -59,7 +59,7 @@ export default function Header() {
 
           
           <ul className="flex flex-1 items-center justify-end gap-3">
-            <li>
+            {/*<li>
               <Link
                 href="/signin"
                 className="btn-sm bg-white text-gray-800 shadow-sm hover:bg-gray-50"
@@ -67,7 +67,7 @@ export default function Header() {
                 Login
               </Link>
             </li>
-            {/*<li>
+            <li>
               <Link
                 href="/signup"
                 className="btn-sm bg-gray-800 text-gray-200 shadow-sm hover:bg-gray-900"

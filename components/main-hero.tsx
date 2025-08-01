@@ -1,6 +1,6 @@
 import Image from "next/image";
 import PageIllustration from "@/components/page-illustration";
-import MainCTA from "@/components/main-cta";
+import MainCTANoAccount from "@/components/main-cta-noaccount";
 import Avatar01 from "@/public/images/avatar-01.jpg";
 import Avatar02 from "@/public/images/avatar-02.jpg";
 import Avatar03 from "@/public/images/avatar-03.jpg";
@@ -89,7 +89,7 @@ export default function MainHero() {
                   data-aos="zoom-y-out"
                   data-aos-delay={450}
                 >
-                  <MainCTA />
+                  <MainCTANoAccount />
                 </div>
               </div>
             </div>

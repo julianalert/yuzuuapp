@@ -47,6 +47,20 @@ export async function POST(request: NextRequest) {
     if (!response.ok) {
       const errorData = await response.json().catch(() => ({}));
       console.error('Loops API error:', response.status, errorData);
+      
+      // Check if it's a duplicate contact (usually 409 or 400 with specific message)
+      if (response.status === 409 || (errorData.message && errorData.message.toLowerCase().includes('already exists'))) {
+        console.log('Contact already exists in Loops - this is normal for returning visitors');
+        return NextResponse.json(
+          { 
+            success: true, 
+            data: { message: 'Contact already exists' },
+            isDuplicate: true
+          },
+          { status: 200 }
+        );
+      }
+      
       return NextResponse.json(
         { 
           success: false, 
