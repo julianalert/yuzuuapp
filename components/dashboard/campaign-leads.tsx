@@ -1,13 +1,23 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import React, { useState, useEffect } from 'react'
 import { supabase } from '../../lib/supabase'
+import PaymentHandler from '../payment-handler'
 
 // LinkedIn SVG icon
 function LinkedInIcon(props: React.SVGProps<SVGSVGElement>) {
   return (
     <svg fill="currentColor" viewBox="0 0 24 24" {...props}>
       <path d="M19 0h-14c-2.76 0-5 2.24-5 5v14c0 2.76 2.24 5 5 5h14c2.76 0 5-2.24 5-5v-14c0-2.76-2.24-5-5-5zm-11 19h-3v-9h3v9zm-1.5-10.28c-.97 0-1.75-.79-1.75-1.75s.78-1.75 1.75-1.75 1.75.79 1.75 1.75-.78 1.75-1.75 1.75zm13.5 10.28h-3v-4.5c0-1.08-.02-2.47-1.5-2.47-1.5 0-1.73 1.17-1.73 2.39v4.58h-3v-9h2.89v1.23h.04c.4-.75 1.38-1.54 2.84-1.54 3.04 0 3.6 2 3.6 4.59v4.72z" />
+    </svg>
+  );
+}
+
+// Link SVG icon
+function LinkIcon(props: React.SVGProps<SVGSVGElement>) {
+  return (
+    <svg fill="currentColor" viewBox="0 0 20 20" {...props}>
+      <path fillRule="evenodd" d="M12.586 4.586a2 2 0 112.828 2.828l-3 3a2 2 0 01-2.828 0 1 1 0 00-1.414 1.414 4 4 0 005.656 0l3-3a4 4 0 00-5.656-5.656l-1.5 1.5a1 1 0 101.414 1.414l1.5-1.5zm-5 5a2 2 0 012.828 0 1 1 0 101.414-1.414 4 4 0 00-5.656 0l-3 3a4 4 0 105.656 5.656l1.5-1.5a1 1 0 10-1.414-1.414l-1.5 1.5a2 2 0 11-2.828-2.828l3-3z" clipRule="evenodd" />
     </svg>
   );
 }
@@ -21,6 +31,15 @@ function LocationIcon(props: React.SVGProps<SVGSVGElement>) {
   );
 }
 
+// Lock SVG icon
+function LockIcon(props: React.SVGProps<SVGSVGElement>) {
+  return (
+    <svg fill="currentColor" viewBox="0 0 20 20" {...props}>
+      <path fillRule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clipRule="evenodd" />
+    </svg>
+  );
+}
+
 interface Lead {
   id: string
   full_name?: string
@@ -30,12 +49,16 @@ interface Lead {
   company_name?: string
   company_website?: string
   company_linkedin_url?: string
+  company_size?: string
+  industry?: string
   country?: string
   city?: string
   lead_email?: string
   campaign_id: string
   sent: string
   created_at: string
+  whygreatfit?: string
+  warmintro?: string
 }
 
 interface Campaign {
@@ -43,6 +66,7 @@ interface Campaign {
   url?: string
   user_id: string
   created_at: string
+  paid_status?: boolean
 }
 
 export default function CampaignLeads({ campaignId }: { campaignId: string }) {
@@ -54,6 +78,26 @@ export default function CampaignLeads({ campaignId }: { campaignId: string }) {
   const [hasMoreLeads, setHasMoreLeads] = useState(false)
   const [loadingMore, setLoadingMore] = useState(false)
   const [totalSentLeads, setTotalSentLeads] = useState(0)
+  const [expandedRows, setExpandedRows] = useState<Set<string>>(new Set())
+
+  const toggleRow = (leadId: string) => {
+    const newExpanded = new Set(expandedRows)
+    if (newExpanded.has(leadId)) {
+      newExpanded.delete(leadId)
+    } else {
+      newExpanded.add(leadId)
+    }
+    setExpandedRows(newExpanded)
+  }
+
+  const cleanMarkdownText = (text: string) => {
+    return text
+      .replace(/\*\*(.*?)\*\*/g, '$1') // Remove **bold** formatting
+      .replace(/\*(.*?)\*/g, '$1') // Remove *italic* formatting
+      .replace(/^\d+\.\s+/gm, '• ') // Convert numbered lists to bullet points
+      .replace(/\n\n/g, '\n') // Remove extra line breaks
+      .trim()
+  }
 
   useEffect(() => {
     const fetchCampaignLeads = async () => {
@@ -103,9 +147,16 @@ export default function CampaignLeads({ campaignId }: { campaignId: string }) {
           .eq('campaign_id', campaignId)
           .eq('sent', 'yes')
 
+        console.log('Fetched leads data:', leadsData)
         setLeads(leadsData || [])
         setTotalSentLeads(totalLeads || 0)
         setHasMoreLeads(totalLeads ? totalLeads > displayCount : false)
+        
+        // Auto-expand the first lead if there are leads
+        if (leadsData && leadsData.length > 0) {
+          setExpandedRows(new Set([leadsData[0].id]))
+        }
+        
         setLoading(false)
       } catch (error) {
         console.error('Error fetching campaign leads:', error)
@@ -204,13 +255,30 @@ export default function CampaignLeads({ campaignId }: { campaignId: string }) {
 
   return (
     <div className="mx-auto max-w-6xl">
-      <div className="mb-8">
-        <h2 className="text-2xl font-bold text-gray-900 mb-2">
-          {totalSentLeads} Leads from {displayUrl}
-        </h2>
-        <p className="text-gray-600">
-          Showing {leads.length} of {totalSentLeads} leads from this campaign
-        </p>
+      <div className="mb-8 flex items-start justify-between">
+        <div>
+          <h2 className="text-2xl font-bold text-gray-900 mb-2">
+            {totalSentLeads} Leads from {displayUrl}
+          </h2>
+          <p className="text-gray-600">
+            Tomorrow, 3 new leads will be added to your list.
+          </p>
+        </div>
+        {!campaign?.paid_status && (
+          <div className="flex-shrink-0">
+            <PaymentHandler 
+              campaignId={campaignId}
+              onSuccess={() => {
+                // Refresh the page to show updated paid status
+                window.location.reload();
+              }}
+              onError={(error) => {
+                console.error('Payment error:', error);
+                // You could add a toast notification here
+              }}
+            />
+          </div>
+        )}
       </div>
 
       <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
@@ -230,82 +298,145 @@ export default function CampaignLeads({ campaignId }: { campaignId: string }) {
                 <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
                   Email
                 </th>
+                <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
+                  Details
+                </th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-200 bg-white">
               {leads.map((lead) => (
-                <tr key={lead.id} className="hover:bg-gray-50">
-                  <td className="py-5 pr-3 pl-4 text-sm whitespace-nowrap sm:pl-6">
-                    <div className="flex items-center">
-                      <div className="size-11 shrink-0">
-                        {lead.photo_url ? (
-                          <img alt="" src={lead.photo_url} className="size-11 rounded-full object-cover" />
-                        ) : (
-                          <div className="size-11 rounded-full bg-gray-200 flex items-center justify-center text-gray-400 text-xs font-bold">
-                            {lead.full_name ? lead.full_name.split(' ').map((n) => n[0]).join('').slice(0,2).toUpperCase() : '?'}
-                          </div>
-                        )}
-                      </div>
-                      <div className="ml-4">
-                        <div className="font-medium text-gray-900 flex items-center gap-2">
-                          {lead.full_name || '-'}
-                          {lead.linkedin_url && (
-                            <a href={lead.linkedin_url} target="_blank" rel="noopener noreferrer">
-                              <LinkedInIcon className="h-4 w-4 text-blue-700 hover:text-blue-800" />
-                            </a>
+                <React.Fragment key={lead.id}>
+                  <tr className="hover:bg-gray-50">
+                    <td className="py-5 pr-3 pl-4 text-sm whitespace-nowrap sm:pl-6">
+                      <div className="flex items-center">
+                        <div className="size-11 shrink-0">
+                          {lead.photo_url ? (
+                            <img alt="" src={lead.photo_url} className="size-11 rounded-full object-cover" />
+                          ) : (
+                            <div className="size-11 rounded-full bg-gray-200 flex items-center justify-center text-gray-400 text-xs font-bold">
+                              {lead.full_name ? lead.full_name.split(' ').map((n) => n[0]).join('').slice(0,2).toUpperCase() : '?'}
+                            </div>
                           )}
                         </div>
-                        {lead.job_title && (
-                          <div className="text-gray-500 text-sm mt-1">
-                            {lead.job_title.length > 30 ? lead.job_title.slice(0, 30) + '...' : lead.job_title}
-                          </div>
-                        )}
+                        <div className="ml-4">
+                                                  <div className="font-medium text-gray-900 flex items-center gap-2">
+                          {lead.full_name || '-'}
+                          {lead.linkedin_url && (
+                            campaign?.paid_status ? (
+                              <a href={lead.linkedin_url} target="_blank" rel="noopener noreferrer">
+                                <LinkedInIcon className="h-4 w-4 text-blue-700 hover:text-blue-800" />
+                              </a>
+                            ) : (
+                              <div className="flex items-center gap-1">
+                                <LinkedInIcon className="h-4 w-4 text-gray-400" />
+                                <LockIcon className="h-3 w-3 text-gray-500" />
+                              </div>
+                            )
+                          )}
+                        </div>
+                          {lead.job_title && (
+                            <div className="text-gray-500 text-sm mt-1">
+                              {lead.job_title.length > 30 ? lead.job_title.slice(0, 30) + '...' : lead.job_title}
+                            </div>
+                          )}
+                        </div>
                       </div>
-                    </div>
-                  </td>
-                  <td className="px-3 py-5 text-sm whitespace-nowrap text-gray-500">
-                    <div className="text-gray-900 font-medium">
+                    </td>
+                                      <td className="px-3 py-5 text-sm whitespace-nowrap text-gray-500">
+                    <div className="text-gray-900 font-medium flex items-center gap-2">
                       {lead.company_name
                         ? lead.company_name.length > 30
                           ? lead.company_name.slice(0, 30) + '...'
                           : lead.company_name
                         : '-'}
-                    </div>
-                    <div className="flex items-center gap-2 mt-1">
-                      {lead.company_website ? (
-                        <a
-                          href={lead.company_website}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="hover:underline text-blue-600"
-                        >
-                          {lead.company_website.length > 25
-                            ? lead.company_website.slice(0, 25) + '...'
-                            : lead.company_website}
+                      {lead.company_website && (
+                        <a href={lead.company_website} target="_blank" rel="noopener noreferrer">
+                          <LinkIcon className="h-4 w-4 text-blue-700 hover:text-blue-800" />
                         </a>
+                      )}
+                      {lead.company_linkedin_url && (
+                        campaign?.paid_status ? (
+                          <a href={lead.company_linkedin_url} target="_blank" rel="noopener noreferrer">
+                            <LinkedInIcon className="h-4 w-4 text-blue-700 hover:text-blue-800" />
+                          </a>
+                        ) : (
+                          <div className="flex items-center gap-1">
+                            <LinkedInIcon className="h-4 w-4 text-gray-400" />
+                            <LockIcon className="h-3 w-3 text-gray-500" />
+                          </div>
+                        )
+                      )}
+                    </div>
+                    <div className="mt-1 text-gray-500">
+                      {lead.company_size && lead.industry ? (
+                        <span>
+                          {lead.company_size} - {lead.industry.length > 12 ? lead.industry.slice(0, 12) + '...' : lead.industry}
+                        </span>
+                      ) : lead.company_size ? (
+                        <span>{lead.company_size}</span>
+                      ) : lead.industry ? (
+                        <span>{lead.industry.length > 12 ? lead.industry.slice(0, 12) + '...' : lead.industry}</span>
                       ) : (
                         <span>-</span>
                       )}
-                      {lead.company_linkedin_url && (
-                        <a href={lead.company_linkedin_url} target="_blank" rel="noopener noreferrer">
-                          <LinkedInIcon className="h-4 w-4 text-blue-700 hover:text-blue-800" />
-                        </a>
-                      )}
                     </div>
                   </td>
-                  <td className="px-3 py-5 text-sm whitespace-nowrap text-gray-500">
-                    <div className="flex items-center gap-2 text-gray-900 font-medium">
-                      <LocationIcon className="h-4 w-4 text-gray-500" />
-                      {lead.country || '-'}
-                    </div>
-                    <div className="mt-1 text-gray-500">
-                      {lead.city || '-'}
-                    </div>
+                    <td className="px-3 py-5 text-sm whitespace-nowrap text-gray-500">
+                      <div className="flex items-center gap-2 text-gray-900 font-medium">
+                        <LocationIcon className="h-4 w-4 text-gray-500" />
+                        {lead.country || '-'}
+                      </div>
+                      <div className="mt-1 text-gray-500">
+                        {lead.city || '-'}
+                      </div>
+                    </td>
+                                      <td className="px-3 py-5 text-sm whitespace-nowrap text-gray-500">
+                    {campaign?.paid_status ? (
+                      lead.lead_email || '-'
+                    ) : (
+                      <div className="flex items-center gap-2 text-gray-500">
+                        <LockIcon className="h-4 w-4" />
+                        <span>Locked</span>
+                      </div>
+                    )}
                   </td>
-                  <td className="px-3 py-5 text-sm whitespace-nowrap text-gray-500">
-                    {lead.lead_email || '-'}
-                  </td>
-                </tr>
+                    <td className="px-3 py-5 text-sm text-gray-500">
+                      <button
+                        onClick={() => toggleRow(lead.id)}
+                        className="text-blue-600 hover:text-blue-800 font-medium transition-colors"
+                      >
+                        {expandedRows.has(lead.id) ? 'Hide Details' : 'View Details'}
+                      </button>
+                    </td>
+                  </tr>
+                  {expandedRows.has(lead.id) && (
+                    <tr key={`${lead.id}-expanded`} className="bg-gray-50">
+                      <td colSpan={5} className="px-6 py-4">
+                        <div className="space-y-4">
+                                                  {lead.whygreatfit && (
+                          <div>
+                            <h4 className="text-sm font-semibold text-gray-900 mb-2">Why It's A Great Fit</h4>
+                            <div className="text-sm text-gray-700 leading-relaxed whitespace-pre-line">
+                              {cleanMarkdownText(lead.whygreatfit)}
+                            </div>
+                          </div>
+                        )}
+                        {lead.warmintro && (
+                          <div>
+                            <h4 className="text-sm font-semibold text-gray-900 mb-2">Your Personalized Warm Intro Message</h4>
+                            <div className="text-sm text-gray-700 leading-relaxed whitespace-pre-line">
+                              {cleanMarkdownText(lead.warmintro)}
+                            </div>
+                          </div>
+                        )}
+                        {!lead.whygreatfit && !lead.warmintro && (
+                          <p className="text-sm text-gray-500 italic">No additional details available</p>
+                        )}
+                        </div>
+                      </td>
+                    </tr>
+                  )}
+                </React.Fragment>
               ))}
             </tbody>
           </table>

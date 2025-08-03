@@ -3,40 +3,40 @@ import Accordion from "@/components/accordion";
 export default function Faqs() {
   const faqs = [
     {
-      question: "How is Simple different from Complex?",
+      question: "Will the leads really be relevant to me?",
       answer:
-        "Simple is designed to be user-friendly and intuitive, while Complex is more robust and feature-rich. Both tools are great for creating websites, but Simple is ideal for beginners and small businesses, while Complex is better suited for larger organizations and developers.",
+        "If it’s not relevant, it’s worthless. And we know that. We analyze your site and match leads based on your actual product and ideal customer. No generic scraping here. It's fully tailored to your offer.",
     },
     {
-      question: "Can I cancel my plan at any time?",
+      question: "How do I know these aren’t just scraped, recycled contacts?",
       answer:
-        "Yes, but you'll still pay the remainder of the term for the plan you signed up for.",
+        "We don’t dump CSVs on your lap. Each lead is fresh, verified, and chosen for you. They are not pulled from some dusty database from 2021.",
       active: true,
     },
     {
-      question: "Can I cancel my workspace plan at any time?",
+      question: "Why only 3 leads per day?",
       answer:
-        "Yes, but you'll still pay the remainder of the term for the plan you signed up for.",
+        "3 leads/day is the free plan, enough to test the waters. Need more? Upgrade anytime and get up to 30 fresh, qualified leads every morning. Start small, scale when you're ready.",
     },
     {
-      question: "What kind of support does Simple provide?",
+      question: "Why pay for this when I can do it myself with LinkedIn or Apollo?",
       answer:
-        "Support is available 24/7 via email, chat, and phone. We're here to help you with any questions or concerns you may have.",
+        "Sure, if you want to spend 3 hours/day prospecting. We save you time and deliver better-fit leads. It’s like having an SDR, minus the $5k/month.",
     },
     {
-      question: "Can my clients or coworkers upload their own content?",
+      question: "Will I get their contact info? Can I actually reach them?",
       answer:
-        "Yes! You can invite clients or coworkers to collaborate on your projects, and they can upload their own content.",
+        "Every lead comes with verified email, LinkedIn, and why they’re a good fit. You get real contacts, not just company logos.",
     },
     {
-      question: "How much traffic can Simple hosting handle?",
+      question: "What if the leads don’t convert?",
       answer:
-        "Our hosting plans are designed to handle high traffic volumes, so you can rest assured that your site will perform well under pressure.",
+        "We get you in front of the right people. What you say to them is up to you, but we’ll even give you cold email templates to help.",
     },
     {
-      question: "Are Simple websites SEO-friendly?",
+      question: "How do you even know who my ideal customers are?",
       answer:
-        "Yes! Simple websites are designed with SEO in mind, so you can easily optimize your site for search engines.",
+        "Your website tells us everything: what you sell, who it’s for, the tools you use. We build your ICP from that. Don’t like a lead? Tell us, and the system gets smarter.",
     },
   ];
 

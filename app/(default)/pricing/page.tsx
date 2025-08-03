@@ -13,8 +13,8 @@ export default function Pricing() {
   return (
     <>
       <PricingTables />
-      <ComparePlans />
-      <TestimonialsGrid />
+      {/*<ComparePlans />
+      <TestimonialsGrid />*/}
       <Faqs />
       <Cta
         className="overflow-hidden"
