@@ -79,6 +79,7 @@ export default function CampaignLeads({ campaignId }: { campaignId: string }) {
   const [loadingMore, setLoadingMore] = useState(false)
   const [totalSentLeads, setTotalSentLeads] = useState(0)
   const [expandedRows, setExpandedRows] = useState<Set<string>>(new Set())
+  const [exportingCsv, setExportingCsv] = useState(false)
 
   const toggleRow = (leadId: string) => {
     const newExpanded = new Set(expandedRows)
@@ -98,6 +99,47 @@ export default function CampaignLeads({ campaignId }: { campaignId: string }) {
       .replace(/\n\n/g, '\n') // Remove extra line breaks
       .trim()
   }
+
+  const exportCsv = async () => {
+    if (!campaign) return;
+    
+    setExportingCsv(true);
+    try {
+      console.log('Starting CSV export for campaign:', campaign.id);
+      
+      const response = await fetch('/api/export-leads-csv', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ campaignId: campaign.id }),
+      });
+
+      console.log('Response status:', response.status);
+      console.log('Response headers:', Object.fromEntries(response.headers.entries()));
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.error || `HTTP ${response.status}: Failed to export CSV`);
+      }
+
+      // Create blob and download
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `leads-${campaign.id}-${new Date().toISOString().split('T')[0]}.csv`;
+      document.body.appendChild(a);
+      a.click();
+      window.URL.revokeObjectURL(url);
+      document.body.removeChild(a);
+    } catch (error) {
+      console.error('Error exporting CSV:', error);
+      alert('Failed to export CSV. Please try again.');
+    } finally {
+      setExportingCsv(false);
+    }
+  };
 
   useEffect(() => {
     const fetchCampaignLeads = async () => {
@@ -264,21 +306,54 @@ export default function CampaignLeads({ campaignId }: { campaignId: string }) {
             Tomorrow, 3 new leads will be added to your list.
           </p>
         </div>
-        {!campaign?.paid_status && (
-          <div className="flex-shrink-0">
-            <PaymentHandler 
-              campaignId={campaignId}
-              onSuccess={() => {
-                // Refresh the page to show updated paid status
-                window.location.reload();
-              }}
-              onError={(error) => {
-                console.error('Payment error:', error);
-                // You could add a toast notification here
-              }}
-            />
-          </div>
-        )}
+        <div className="flex-shrink-0">
+          {campaign?.paid_status ? (
+            <button
+              onClick={exportCsv}
+              disabled={exportingCsv}
+              className="btn bg-gray-800 font-normal text-gray-200 shadow-sm hover:bg-gray-900 disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              <svg
+                className="mr-2 fill-gray-500"
+                xmlns="http://www.w3.org/2000/svg"
+                width={16}
+                height={16}
+              >
+                <path d="M14 2H6a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2zM6 4h8v2H6V4zm0 4h8v2H6V8zm0 4h6v2H6v-2z"/>
+              </svg>
+              {exportingCsv ? 'Exporting...' : 'Export as CSV'}
+            </button>
+          ) : (
+            <div className="flex flex-col sm:flex-row gap-2">
+              <button
+                disabled
+                className="btn bg-gray-800 font-normal text-gray-200 shadow-sm opacity-50 cursor-not-allowed"
+              >
+                <svg
+                  className="mr-2 fill-gray-500"
+                  xmlns="http://www.w3.org/2000/svg"
+                  width={16}
+                  height={16}
+                >
+                  <path d="M14 2H6a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2zM6 4h8v2H6V4zm0 4h8v2H6V8zm0 4h6v2H6v-2z"/>
+                </svg>
+                Export as CSV
+                <LockIcon className="ml-2 h-3 w-3 text-gray-500" />
+              </button>
+              <PaymentHandler 
+                campaignId={campaignId}
+                onSuccess={() => {
+                  // Refresh the page to show updated paid status
+                  window.location.reload();
+                }}
+                onError={(error) => {
+                  console.error('Payment error:', error);
+                  // You could add a toast notification here
+                }}
+              />
+            </div>
+          )}
+        </div>
       </div>
 
       <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
@@ -413,25 +488,50 @@ export default function CampaignLeads({ campaignId }: { campaignId: string }) {
                     <tr key={`${lead.id}-expanded`} className="bg-gray-50">
                       <td colSpan={5} className="px-6 py-4">
                         <div className="space-y-4">
-                                                  {lead.whygreatfit && (
-                          <div>
-                            <h4 className="text-sm font-semibold text-gray-900 mb-2">Why It's A Great Fit</h4>
-                            <div className="text-sm text-gray-700 leading-relaxed whitespace-pre-line">
-                              {cleanMarkdownText(lead.whygreatfit)}
-                            </div>
-                          </div>
-                        )}
-                        {lead.warmintro && (
-                          <div>
-                            <h4 className="text-sm font-semibold text-gray-900 mb-2">Your Personalized Warm Intro Message</h4>
-                            <div className="text-sm text-gray-700 leading-relaxed whitespace-pre-line">
-                              {cleanMarkdownText(lead.warmintro)}
-                            </div>
-                          </div>
-                        )}
-                        {!lead.whygreatfit && !lead.warmintro && (
-                          <p className="text-sm text-gray-500 italic">No additional details available</p>
-                        )}
+                          {campaign?.paid_status ? (
+                            <>
+                              {lead.whygreatfit && (
+                                <div>
+                                  <h4 className="text-sm font-semibold text-gray-900 mb-2">Why It's A Great Fit</h4>
+                                  <div className="text-sm text-gray-700 leading-relaxed whitespace-pre-line">
+                                    {cleanMarkdownText(lead.whygreatfit)}
+                                  </div>
+                                </div>
+                              )}
+                              {lead.warmintro && (
+                                <div>
+                                  <h4 className="text-sm font-semibold text-gray-900 mb-2">Your Personalized Warm Intro Message</h4>
+                                  <div className="text-sm text-gray-700 leading-relaxed whitespace-pre-line">
+                                    {cleanMarkdownText(lead.warmintro)}
+                                  </div>
+                                </div>
+                              )}
+                              {!lead.whygreatfit && !lead.warmintro && (
+                                <p className="text-sm text-gray-500 italic">No additional details available</p>
+                              )}
+                            </>
+                          ) : (
+                            <>
+                              <div>
+                                <h4 className="text-sm font-semibold text-gray-900 mb-2 flex items-center gap-2">
+                                  Why It's A Great Fit
+                                  <LockIcon className="h-4 w-4 text-gray-500" />
+                                </h4>
+                                <div className="text-sm text-gray-500 italic">
+                                  Unlock to see why this lead is a great fit for your business
+                                </div>
+                              </div>
+                              <div>
+                                <h4 className="text-sm font-semibold text-gray-900 mb-2 flex items-center gap-2">
+                                  Your Personalized Warm Intro Message
+                                  <LockIcon className="h-4 w-4 text-gray-500" />
+                                </h4>
+                                <div className="text-sm text-gray-500 italic">
+                                  Unlock to see your personalized warm intro message for this lead
+                                </div>
+                              </div>
+                            </>
+                          )}
                         </div>
                       </td>
                     </tr>
