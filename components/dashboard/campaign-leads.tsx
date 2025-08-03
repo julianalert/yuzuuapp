@@ -255,7 +255,7 @@ export default function CampaignLeads({ campaignId }: { campaignId: string }) {
 
   return (
     <div className="mx-auto max-w-6xl">
-      <div className="mb-8 flex items-start justify-between">
+      <div className="mb-8 flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
         <div>
           <h2 className="text-2xl font-bold text-gray-900 mb-2">
             {totalSentLeads} Leads from {displayUrl}
