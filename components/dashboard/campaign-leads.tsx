@@ -309,7 +309,7 @@ export default function CampaignLeads({ campaignId }: { campaignId: string }) {
                   You will receive an email when they are ready.
                 </span>{" "}
                 <br />
-                
+                <br />
                 <span className="animate-[code-4_5s_infinite] text-gray-200">
                   You will love it.
                 </span>
