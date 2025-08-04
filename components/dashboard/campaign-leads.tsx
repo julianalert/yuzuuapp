@@ -3,6 +3,10 @@
 import React, { useState, useEffect } from 'react'
 import { supabase } from '../../lib/supabase'
 import PaymentHandler from '../payment-handler'
+import FeatureImg01 from "@/public/images/features-02-overlay-01.png";
+import FeatureImg02 from "@/public/images/features-02-overlay-02.png";
+import FeatureImg03 from "@/public/images/features-02-overlay-03.png";
+import Image from 'next/image'
 
 // LinkedIn SVG icon
 function LinkedInIcon(props: React.SVGProps<SVGSVGElement>) {
@@ -283,12 +287,46 @@ export default function CampaignLeads({ campaignId }: { campaignId: string }) {
   if (!leads || leads.length === 0) {
     return (
       <div className="mx-auto max-w-3xl text-center">
-        <h2 className="text-2xl font-bold text-gray-900 mb-4">
-          No leads yet for this campaign
-        </h2>
-        <p className="text-lg text-gray-700">
-          We are processing your leads. You will receive them by email when they are ready.
-        </p>
+         {/* Illustration  */}
+        <div
+            className="group relative mx-auto mb-16 flex w-full max-w-[500px] justify-center md:mb-10"
+          >
+            <div className="absolute bottom-0 -z-10" aria-hidden="true">
+              <div className="h-80 w-80 rounded-full bg-blue-500 opacity-70 blur-[160px] will-change-[filter]" />
+            </div>
+            <div className="aspect-video w-full -rotate-1 rounded-2xl bg-gray-900 px-5 py-3 shadow-xl transition duration-300 group-hover:-rotate-0">
+              <div className="relative mb-8 flex items-center justify-between before:block before:h-[9px] before:w-[41px] before:bg-[length:16px_9px] before:[background-image:radial-gradient(circle_at_4.5px_4.5px,var(--color-gray-600)_4.5px,transparent_0)] after:w-[41px]">
+                <span className="text-[13px] font-medium text-white">
+                Processing your leads...
+                </span>
+              </div>
+              <div className="font-mono text-sm text-gray-500 transition duration-300 [&_span]:opacity-0">
+                <span className="animate-[code-1_5s_infinite] text-gray-200">
+                  🤖 beep b00p!
+                </span>{" "}
+                <br />
+                <span className="animate-[code-2_5s_infinite]">
+                  I'm getting your leads ready.
+                </span>
+                <br />
+                <span className="animate-[code-3_5s_infinite]">
+                  You will receive an email when they are ready.
+                </span>{" "}
+                <br />
+                <br />
+                <span className="animate-[code-4_5s_infinite] text-gray-200">
+                  You will love it.
+                </span>
+                <br />
+                <span className="animate-[code-5_5s_infinite]">
+                  At least, I hope.
+                </span>
+              </div>
+            </div>
+          </div>
+          <p className="text-lg text-gray-500 pt-4">
+            This takes a few minutes. <br /> You can wait and refresh the page to see the latest leads.
+            </p>
       </div>
     )
   }
