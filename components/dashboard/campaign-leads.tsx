@@ -3,10 +3,6 @@
 import React, { useState, useEffect } from 'react'
 import { supabase } from '../../lib/supabase'
 import PaymentHandler from '../payment-handler'
-import FeatureImg01 from "@/public/images/features-02-overlay-01.png";
-import FeatureImg02 from "@/public/images/features-02-overlay-02.png";
-import FeatureImg03 from "@/public/images/features-02-overlay-03.png";
-import Image from 'next/image'
 
 // LinkedIn SVG icon
 function LinkedInIcon(props: React.SVGProps<SVGSVGElement>) {
