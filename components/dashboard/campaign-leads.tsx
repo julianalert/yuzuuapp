@@ -316,7 +316,7 @@ export default function CampaignLeads({ campaignId }: { campaignId: string }) {
                 <br />
                 <span className="animate-[code-5_5s_infinite]">
                   At least, I hope.
-                </span>
+                 </span>
               </div>
             </div>
           </div>
