@@ -17,11 +17,13 @@ export default function FeaturesPlanet() {
           {/* Section header */}
           <div className="mx-auto max-w-3xl pb-16 text-center md:pb-20">
             <h2 className="text-3xl font-bold text-gray-200 md:text-4xl">
-            You’re spending hours every week trying to find leads 
+            Struggling to find new clients for your SaaS?
             </h2>
             <p className="text-lg text-gray-500 pt-4">
-            You bounce between LinkedIn, Apollo, scraping tools, and spreadsheets. 
-            <br />Only to end up with cold, low-quality prospects that go nowhere. 
+            You’ve built a solid product. You’ve got happy users. 
+            <br />But getting consistent, high-quality leads feels like pulling teeth.
+            <br />You’re stuck spending hours between LinkedIn, Apollo, scraping tools, and spreadsheets. 
+            <br />🥶 Only to end up with cold, low-quality prospects that go nowhere 🥶
             </p>
           </div>
           {/* Illustration  */}
@@ -39,26 +41,26 @@ export default function FeaturesPlanet() {
                 </span>
               </div>
               <div className="font-mono text-sm text-gray-500 blur-xs will-change-[filter] transition duration-300 group-hover:blur-none [&_span]:opacity-0">
-                <span className="animate-[code-1_10s_infinite] text-gray-200">
+                <span className="animate-[code-1_5s_infinite] text-gray-200">
                   Hi Mary,
                 </span>{" "}
-                <span className="animate-[code-2_10s_infinite]">
+                <span className="animate-[code-2_5s_infinite]">
                   wanna buy my awesome tool?
                 </span>
                 <br />
-                <span className="animate-[code-3_10s_infinite]">
+                <span className="animate-[code-3_5s_infinite]">
                   I swear it's the best thing since sliced bread.
                 </span>{" "}
-                <span className="animate-[code-4_10s_infinite]">
+                <span className="animate-[code-4_5s_infinite]">
                   You will love it.
                 </span>
                 <br />
                 <br />
-                <span className="animate-[code-5_10s_infinite] text-gray-200">
+                <span className="animate-[code-5_5s_infinite] text-gray-200">
                   Yes, you will love it.
                 </span>
                 <br />
-                <span className="animate-[code-6_10s_infinite]">
+                <span className="animate-[code-6_5s_infinite]">
                   Trust me.
                 </span>
               </div>
@@ -90,7 +92,7 @@ export default function FeaturesPlanet() {
           {/* Section bottom */}
           <div className="mx-auto max-w-3xl pb-16 text-center md:pb-4">
             <p className="text-lg text-gray-500 pt-4">
-            😬 Meanwhile, your actual work of selling, growing, building is on hold 😬
+            😬 Meanwhile, you're not closing deals and missing out on new revenue 😬
             </p>
           </div>
           {/* Planet 

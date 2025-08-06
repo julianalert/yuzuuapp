@@ -77,7 +77,7 @@ export default function CampaignLeads({ campaignId }: { campaignId: string }) {
   const [displayCount, setDisplayCount] = useState(20)
   const [hasMoreLeads, setHasMoreLeads] = useState(false)
   const [loadingMore, setLoadingMore] = useState(false)
-  const [totalSentLeads, setTotalSentLeads] = useState(0)
+  const [totalLeads, setTotalLeads] = useState(0)
   const [expandedRows, setExpandedRows] = useState<Set<string>>(new Set())
   const [exportingCsv, setExportingCsv] = useState(false)
 
@@ -171,7 +171,6 @@ export default function CampaignLeads({ campaignId }: { campaignId: string }) {
           .from('leads')
           .select('*')
           .eq('campaign_id', campaignId)
-          .eq('sent', 'yes')
           .order('created_at', { ascending: false })
           .limit(displayCount)
 
@@ -187,11 +186,10 @@ export default function CampaignLeads({ campaignId }: { campaignId: string }) {
           .from('leads')
           .select('*', { count: 'exact', head: true })
           .eq('campaign_id', campaignId)
-          .eq('sent', 'yes')
 
         console.log('Fetched leads data:', leadsData)
         setLeads(leadsData || [])
-        setTotalSentLeads(totalLeads || 0)
+        setTotalLeads(totalLeads || 0)
         setHasMoreLeads(totalLeads ? totalLeads > displayCount : false)
         
         // Auto-expand the first lead if there are leads
@@ -221,7 +219,6 @@ export default function CampaignLeads({ campaignId }: { campaignId: string }) {
         .from('leads')
         .select('*')
         .eq('campaign_id', campaign.id)
-        .eq('sent', 'yes')
         .order('created_at', { ascending: false })
         .limit(newDisplayCount)
 
@@ -235,11 +232,10 @@ export default function CampaignLeads({ campaignId }: { campaignId: string }) {
         .from('leads')
         .select('*', { count: 'exact', head: true })
         .eq('campaign_id', campaign.id)
-        .eq('sent', 'yes')
 
       setLeads(additionalLeads || [])
       setDisplayCount(newDisplayCount)
-      setTotalSentLeads(totalLeads || 0)
+      setTotalLeads(totalLeads || 0)
       setHasMoreLeads(totalLeads ? totalLeads > newDisplayCount : false)
     } catch (error) {
       console.error('Error loading more leads:', error)
@@ -311,7 +307,7 @@ export default function CampaignLeads({ campaignId }: { campaignId: string }) {
                 <br />
                 <br />
                 <span className="animate-[code-4_5s_infinite] text-gray-200">
-                  You will love it.
+                  You will love it 💙
                 </span>
                 <br />
                 <span className="animate-[code-5_5s_infinite]">
@@ -321,7 +317,7 @@ export default function CampaignLeads({ campaignId }: { campaignId: string }) {
             </div>
           </div>
           <p className="text-lg text-gray-500 pt-4">
-            This takes a few minutes. <br /> You can wait and refresh the page to see the latest leads.
+            Our lead finder takes a few hours to come up with the best leads. <br /> You can close this tab and come back later.
             </p>
       </div>
     )
@@ -334,10 +330,10 @@ export default function CampaignLeads({ campaignId }: { campaignId: string }) {
       <div className="mb-8 flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
         <div>
           <h2 className="text-2xl font-bold text-gray-900 mb-2">
-            {totalSentLeads} Leads from {displayUrl}
+            {totalLeads} Leads 
           </h2>
           <p className="text-gray-600">
-            Tomorrow, 3 new leads will be added to your list.
+          From {displayUrl}
           </p>
         </div>
         <div className="flex-shrink-0">
@@ -372,7 +368,7 @@ export default function CampaignLeads({ campaignId }: { campaignId: string }) {
                   <path d="M14 2H6a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2zM6 4h8v2H6V4zm0 4h8v2H6V8zm0 4h6v2H6v-2z"/>
                 </svg>
                 Export as CSV
-                <LockIcon className="ml-2 h-3 w-3 text-gray-500" />
+                <LockIcon className="ml-2 h-3 w-3" style={{ color: '#ffc123' }} />
               </button>
               <PaymentHandler 
                 campaignId={campaignId}
@@ -438,7 +434,7 @@ export default function CampaignLeads({ campaignId }: { campaignId: string }) {
                             ) : (
                               <div className="flex items-center gap-1">
                                 <LinkedInIcon className="h-4 w-4 text-gray-400" />
-                                <LockIcon className="h-3 w-3 text-gray-500" />
+                                <LockIcon className="h-3 w-3" style={{ color: '#ffc123' }} />
                               </div>
                             )
                           )}
@@ -471,22 +467,31 @@ export default function CampaignLeads({ campaignId }: { campaignId: string }) {
                         ) : (
                           <div className="flex items-center gap-1">
                             <LinkedInIcon className="h-4 w-4 text-gray-400" />
-                            <LockIcon className="h-3 w-3 text-gray-500" />
+                            <LockIcon className="h-3 w-3" style={{ color: '#ffc123' }} />
                           </div>
                         )
                       )}
                     </div>
                     <div className="mt-1 text-gray-500">
-                      {lead.company_size && lead.industry ? (
-                        <span>
-                          {lead.company_size} - {lead.industry.length > 12 ? lead.industry.slice(0, 12) + '...' : lead.industry}
-                        </span>
-                      ) : lead.company_size ? (
-                        <span>{lead.company_size}</span>
-                      ) : lead.industry ? (
-                        <span>{lead.industry.length > 12 ? lead.industry.slice(0, 12) + '...' : lead.industry}</span>
+                      {campaign?.paid_status ? (
+                        <>
+                          {lead.company_size && lead.industry ? (
+                            <span>
+                              {lead.company_size} - {lead.industry.length > 12 ? lead.industry.slice(0, 12) + '...' : lead.industry}
+                            </span>
+                          ) : lead.company_size ? (
+                            <span>{lead.company_size}</span>
+                          ) : lead.industry ? (
+                            <span>{lead.industry.length > 12 ? lead.industry.slice(0, 12) + '...' : lead.industry}</span>
+                          ) : (
+                            <span>-</span>
+                          )}
+                        </>
                       ) : (
-                        <span>-</span>
+                        <div className="flex items-center gap-1">
+                          <span>Size - Industry</span>
+                                                        <LockIcon className="h-3 w-3" style={{ color: '#ffc123' }} />
+                        </div>
                       )}
                     </div>
                   </td>
@@ -504,7 +509,7 @@ export default function CampaignLeads({ campaignId }: { campaignId: string }) {
                       lead.lead_email || '-'
                     ) : (
                       <div className="flex items-center gap-2 text-gray-500">
-                        <LockIcon className="h-4 w-4" />
+                        <LockIcon className="h-4 w-4" style={{ color: '#ffc123' }} />
                         <span>Locked</span>
                       </div>
                     )}
@@ -549,7 +554,7 @@ export default function CampaignLeads({ campaignId }: { campaignId: string }) {
                               <div>
                                 <h4 className="text-sm font-semibold text-gray-900 mb-2 flex items-center gap-2">
                                   Why It's A Great Fit
-                                  <LockIcon className="h-4 w-4 text-gray-500" />
+                                  <LockIcon className="h-4 w-4" style={{ color: '#ffc123' }} />
                                 </h4>
                                 <div className="text-sm text-gray-500 italic">
                                   Unlock to see why this lead is a great fit for your business
@@ -558,7 +563,7 @@ export default function CampaignLeads({ campaignId }: { campaignId: string }) {
                               <div>
                                 <h4 className="text-sm font-semibold text-gray-900 mb-2 flex items-center gap-2">
                                   Your Personalized Warm Intro Message
-                                  <LockIcon className="h-4 w-4 text-gray-500" />
+                                  <LockIcon className="h-4 w-4" style={{ color: '#ffc123' }} />
                                 </h4>
                                 <div className="text-sm text-gray-500 italic">
                                   Unlock to see your personalized warm intro message for this lead

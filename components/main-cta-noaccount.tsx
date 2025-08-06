@@ -112,6 +112,33 @@ export default function MainCTANoAccount() {
           console.error('Error creating Loops contact:', loopsError);
         }
         
+        // Trigger final webhook
+        try {
+          console.log('Triggering final webhook');
+          
+          const finalWebhookResponse = await fetch('https://notanothermarketer.app.n8n.cloud/webhook/e3c5cfde-f363-432d-9cf2-3cc846dbe70a', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              url: websiteUrl.trim(),
+              email: email.trim(),
+              campaignId: campaignId,
+              source: 'homepage_cta',
+              timestamp: new Date().toISOString(),
+            }),
+          });
+          
+          if (!finalWebhookResponse.ok) {
+            console.error('Final webhook error:', finalWebhookResponse.status, finalWebhookResponse.statusText);
+          } else {
+            console.log('Final webhook triggered successfully');
+          }
+        } catch (finalWebhookError) {
+          console.error('Error triggering final webhook:', finalWebhookError);
+        }
+        
         // Redirect to leads page with campaign ID
         if (campaignId) {
           console.log('Redirecting to leads page with campaignId:', campaignId);

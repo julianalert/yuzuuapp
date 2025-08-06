@@ -23,11 +23,11 @@ export default function FeaturesHome() {
           {/* Section header */}
           <div className="mx-auto max-w-3xl pb-24 text-center md:pb-28">
             <h2 className="mb-4 text-3xl font-bold md:text-4xl">
-              The right leads, at the right time 
+            Your next paying user delivered to you
             </h2>
             <p className="text-lg text-gray-700">
-            Yuzuu delivers 3 high-intent leads straight to your inbox every morning. 
-            <br />You focus on closing, we make sure you talk to the right people.
+            Yuzuu delivers 500 high-intent leads straight to you right now. 
+            <br />We make sure you talk to the right people so you can close deals.
             </p>
           </div>
           {/* Planet */}
@@ -176,10 +176,10 @@ export default function FeaturesHome() {
                 >
                   <path d="M2 0a1 1 0 0 0 0 2h6a1 1 0 0 0 0-2H2Zm0 7a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V7Zm1-3a3 3 0 0 0-3 3v2a3 3 0 0 0 3 3h10a3 3 0 0 0 3-3V7a3 3 0 0 0-3-3H3Z" />
                 </svg>
-                <span>Wake up to leads already qualified</span>
+                <span>We define your ICP</span>
               </h3>
               <p className="text-[15px] text-gray-700">
-              You receive a daily email with qualified & enriched lead tailored to your offer.
+              Our engine matches your ICP to the right leads. 
               </p>
             </article>
             <article>
@@ -192,7 +192,7 @@ export default function FeaturesHome() {
                 >
                   <path d="M14.75 2.5a1.25 1.25 0 1 0 0-2.5 1.25 1.25 0 0 0 0 2.5Zm0 13.5a1.25 1.25 0 1 0 0-2.5 1.25 1.25 0 0 0 0 2.5ZM2.5 14.75a1.25 1.25 0 1 1-2.5 0 1.25 1.25 0 0 1 2.5 0ZM1.25 2.5a1.25 1.25 0 1 0 0-2.5 1.25 1.25 0 0 0 0 2.5ZM4 8a4 4 0 1 1 8 0 4 4 0 0 1-8 0Zm4-6a6 6 0 1 0 0 12A6 6 0 0 0 8 2Z" />
                 </svg>
-                <span>Start reaching out</span>
+                <span>500 leads ready to buy from you</span>
               </h3>
               <p className="text-[15px] text-gray-700">
               Now that you have your leads, you can start reaching out and get new users for your SaaS.

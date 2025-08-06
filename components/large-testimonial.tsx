@@ -31,7 +31,7 @@ export default function LargeTestimonial() {
             </div>
             <p className="text-2xl font-bold text-gray-900">
             "We scaled from <em className="italic text-gray-500">3 to 20 demos per week</em>{" "} 
-            just using the daily leads. No fluff here. Just the right people, delivered like clockwork. It has replaced 90% of our outbound workflow.”
+            just using Yuzuu's leads. No fluff here. Just the right people, delivered like clockwork. It has replaced 90% of our SDR workforce.”
             </p>
             <div className="text-sm font-medium text-gray-500">
               <span className="text-gray-700">Julien D.</span>{" "}
