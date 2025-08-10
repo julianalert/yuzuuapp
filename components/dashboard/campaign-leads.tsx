@@ -317,7 +317,7 @@ export default function CampaignLeads({ campaignId }: { campaignId: string }) {
             </div>
           </div>
           <p className="text-lg text-gray-500 pt-4">
-            Our lead finder takes a few hours to come up with the best leads. <br /> You can close this tab and come back later.
+            Our lead finder takes a few minutes to come up with the best leads for your business. <br /> You can wait and refresh the page, or close this tab and come back later.
             </p>
       </div>
     )

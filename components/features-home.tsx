@@ -23,7 +23,7 @@ export default function FeaturesHome() {
           {/* Section header */}
           <div className="mx-auto max-w-3xl pb-24 text-center md:pb-28">
             <h2 className="mb-4 text-3xl font-bold md:text-4xl">
-            Your next paying user delivered to you
+            Your next customer delivered to you
             </h2>
             <p className="text-lg text-gray-700">
             Yuzuu delivers 500 high-intent leads straight to you right now. 
@@ -195,7 +195,7 @@ export default function FeaturesHome() {
                 <span>500 leads ready to buy from you</span>
               </h3>
               <p className="text-[15px] text-gray-700">
-              Now that you have your leads, you can start reaching out and get new users for your SaaS.
+              Now that you have your leads, you can start reaching out and get new clients for your business.
               </p>
             </article>
           </div>

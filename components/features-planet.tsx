@@ -17,10 +17,10 @@ export default function FeaturesPlanet() {
           {/* Section header */}
           <div className="mx-auto max-w-3xl pb-16 text-center md:pb-20">
             <h2 className="text-3xl font-bold text-gray-200 md:text-4xl">
-            Struggling to find new clients for your SaaS?
+            Struggling to find new clients for your business?
             </h2>
             <p className="text-lg text-gray-500 pt-4">
-            You’ve built a solid product. You’ve got happy users. 
+            You’ve built a solid product/service. You’ve got happy customers. 
             <br />But getting consistent, high-quality leads feels like pulling teeth.
             <br />You’re stuck spending hours between LinkedIn, Apollo, scraping tools, and spreadsheets. 
             <br />🥶 Only to end up with cold, low-quality prospects that go nowhere 🥶

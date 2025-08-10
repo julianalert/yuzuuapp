@@ -73,7 +73,7 @@ export default function MainHero() {
               data-aos-delay={150}
             >
               Find Clients <br className="max-lg:hidden" />
-              For Your B2B SaaS
+              For Your B2B Business
             </h1>
             <div className="mx-auto max-w-3xl">
               <p
@@ -81,7 +81,7 @@ export default function MainHero() {
                 data-aos="zoom-y-out"
                 data-aos-delay={300}
               >
-                Get 500 qualified prospects lining up to buy your products & services. <br /> Perfectly matched to your ICP. Free.
+                Get 500 qualified prospects lining up to buy your product or service. <br /> Perfectly matched to your ICP. 100% Free.
               </p>
               <div className="relative before:absolute before:inset-0 before:border-y before:[border-image:linear-gradient(to_right,transparent,--theme(--color-slate-300/.8),transparent)1]">
                 <div
