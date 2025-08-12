@@ -1,6 +1,7 @@
 import PageIllustration from "../../components/page-illustration";
 import CampaignLeads from '@/components/dashboard/campaign-leads'
 import SuccessStats from '@/components/success-stats'
+import PricingModal from '@/components/pricing-modal'
 
 export const metadata = {
   title: "Leads - Yuzuu",
@@ -89,6 +90,9 @@ export default async function Leads({ searchParams }: { searchParams: Promise<{ 
           </div>
         </div>
       </div>
+
+      {/* Pricing Modal */}
+      <PricingModal campaignId={campaignId} />
     </section>
   )
 } 

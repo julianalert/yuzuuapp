@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { getStripe } from '@/lib/stripe';
 import PricingPopup from './pricing-popup';
-import PricingModal from './pricing-modal';
+import { usePricingModal } from '@/lib/pricing-modal-context';
 
 interface PaymentHandlerProps {
   campaignId: string;
@@ -14,7 +14,7 @@ interface PaymentHandlerProps {
 export default function PaymentHandler({ campaignId, onSuccess, onError }: PaymentHandlerProps) {
   const [loading, setLoading] = useState(false);
   const [showPricing, setShowPricing] = useState(false);
-  const [showPricingModal, setShowPricingModal] = useState(false);
+  const { openModal } = usePricingModal();
 
   const handlePayment = async () => {
     setLoading(true);
@@ -54,14 +54,12 @@ export default function PaymentHandler({ campaignId, onSuccess, onError }: Payme
     }
   };
 
-
-
   return (
     <>
       <div className="flex flex-col gap-2">
         <div className="flex flex-col sm:flex-row gap-2">
           <button
-            onClick={() => setShowPricingModal(true)}
+            onClick={openModal}
             disabled={loading}
             className="btn group bg-linear-to-t from-blue-600 to-blue-500 bg-[length:100%_100%] bg-[bottom] text-white shadow-sm hover:bg-[length:100%_150%] disabled:opacity-50 disabled:cursor-not-allowed flex-1"
           >
@@ -93,12 +91,6 @@ export default function PaymentHandler({ campaignId, onSuccess, onError }: Payme
       <PricingPopup 
         isOpen={showPricing} 
         onClose={() => setShowPricing(false)} 
-      />
-      
-      <PricingModal 
-        isOpen={showPricingModal} 
-        onClose={() => setShowPricingModal(false)}
-        campaignId={campaignId}
       />
     </>
   );

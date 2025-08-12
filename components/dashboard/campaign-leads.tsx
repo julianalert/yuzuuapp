@@ -6,6 +6,7 @@ import PaymentHandler from '../payment-handler'
 import CtaCopy from '../cta-copy'
 import ROICalculator from '../roi-calculator'
 import SuccessStats from '../success-stats'
+import StickyUnlockButton from '../sticky-unlock-button'
 
 // LinkedIn SVG icon
 function LinkedInIcon(props: React.SVGProps<SVGSVGElement>) {
@@ -648,6 +649,12 @@ export default function CampaignLeads({ campaignId }: { campaignId: string }) {
           <SuccessStats />
         </div>
       )}
+
+      {/* Sticky Unlock Button */}
+      <StickyUnlockButton 
+        campaignId={campaignId} 
+        isPaid={campaign?.paid_status || false} 
+      />
     </div>
   )
 } 

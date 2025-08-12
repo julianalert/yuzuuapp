@@ -1,16 +1,16 @@
 'use client';
 
-import { useState } from 'react';
 import Image from "next/image";
 import Stripes from "@/public/images/stripes-dark.svg";
-import PricingModal from './pricing-modal';
+import { usePricingModal } from '@/lib/pricing-modal-context';
 
 interface CtaCopyProps {
   campaignId?: string;
 }
 
 export default function CtaCopy({ campaignId }: CtaCopyProps) {
-  const [showPricingModal, setShowPricingModal] = useState(false);
+  const { openModal } = usePricingModal();
+  
   return (
     <section>
       <div className="mx-auto max-w-6xl px-4 sm:px-6">
@@ -42,7 +42,7 @@ export default function CtaCopy({ campaignId }: CtaCopyProps) {
             
             <div className="mx-auto max-w-xs sm:flex sm:max-w-none sm:justify-center">
               <button
-                onClick={() => setShowPricingModal(true)}
+                onClick={openModal}
                 className="btn group mb-4 w-full bg-linear-to-t from-blue-600 to-blue-500 bg-[length:100%_100%] bg-[bottom] text-white shadow-sm hover:bg-[length:100%_150%] sm:mb-0 sm:w-auto"
               >
                 <span className="relative inline-flex items-center">
@@ -56,12 +56,6 @@ export default function CtaCopy({ campaignId }: CtaCopyProps) {
           </div>
         </div>
       </div>
-      
-      <PricingModal 
-        isOpen={showPricingModal} 
-        onClose={() => setShowPricingModal(false)}
-        campaignId={campaignId || ''}
-      />
     </section>
   );
 } 

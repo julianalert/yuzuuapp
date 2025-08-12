@@ -1,15 +1,16 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useEffect } from 'react';
 import PricingV1 from './pricingv1';
+import { usePricingModal } from '@/lib/pricing-modal-context';
 
 interface PricingModalProps {
-  isOpen: boolean;
-  onClose: () => void;
   campaignId: string;
 }
 
-export default function PricingModal({ isOpen, onClose, campaignId }: PricingModalProps) {
+export default function PricingModal({ campaignId }: PricingModalProps) {
+  const { isModalOpen: isOpen, closeModal: onClose } = usePricingModal();
+
   // Handle ESC key press
   useEffect(() => {
     const handleEsc = (event: KeyboardEvent) => {

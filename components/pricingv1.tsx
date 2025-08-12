@@ -269,7 +269,7 @@ export default function PricingV1({ campaignId, onPaymentStart, onPaymentSuccess
                       disabled={loading}
                       className="btn-sm w-full rounded-lg bg-linear-to-t from-blue-600 to-blue-500 bg-[length:100%_100%] bg-[bottom] py-1.5 text-white shadow-sm hover:bg-[length:100%_150%] disabled:opacity-50 disabled:cursor-not-allowed"
                     >
-                      {loading ? 'Processing...' : 'Unlock Automated Outreach'}
+                      {loading ? 'Processing...' : 'Unlock Leads Information'}
                     </button>
                   ) : (
                     <a
