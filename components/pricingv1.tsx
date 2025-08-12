@@ -88,7 +88,7 @@ export default function PricingV1({ campaignId, onPaymentStart, onPaymentSuccess
                     <span className="text-4xl font-bold tabular-nums">
                       0
                     </span>
-                    <span className="pl-1 text-sm text-gray-500">One-time payment</span>
+                    <span className="pl-1 text-sm text-gray-500">Free</span>
                   </div>
                   <div className="grow text-sm text-gray-700">
                     Manually reach out to leads.
@@ -133,7 +133,17 @@ export default function PricingV1({ campaignId, onPaymentStart, onPaymentSuccess
                     >
                       <path d="M10.28 2.28L3.989 8.575 1.695 6.28A1 1 0 00.28 7.695l3 3a1 1 0 001.414 0l7-7A1 1 0 0010.28 2.28z" />
                     </svg>
-                    <span>Company name</span>
+                    <span>City</span>
+                  </li>
+                  <li className="flex items-center">
+                    <svg
+                      className="mr-2 h-3 w-3 shrink-0 fill-current text-emerald-500"
+                      viewBox="0 0 12 12"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path d="M10.28 2.28L3.989 8.575 1.695 6.28A1 1 0 00.28 7.695l3 3a1 1 0 001.414 0l7-7A1 1 0 0010.28 2.28z" />
+                    </svg>
+                    <span>Country</span>
                   </li>
                   <li className="flex items-center">
                     <svg
@@ -144,6 +154,16 @@ export default function PricingV1({ campaignId, onPaymentStart, onPaymentSuccess
                       <path d="M10.28 2.28L3.989 8.575 1.695 6.28A1 1 0 00.28 7.695l3 3a1 1 0 001.414 0l7-7A1 1 0 0010.28 2.28z" />
                     </svg>
                     <span>Company name</span>
+                  </li>
+                  <li className="flex items-center">
+                    <svg
+                      className="mr-2 h-3 w-3 shrink-0 fill-current text-emerald-500"
+                      viewBox="0 0 12 12"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path d="M10.28 2.28L3.989 8.575 1.695 6.28A1 1 0 00.28 7.695l3 3a1 1 0 001.414 0l7-7A1 1 0 0010.28 2.28z" />
+                    </svg>
+                    <span>Company website</span>
                   </li>
                 </ul>
                 <div className="mt-6">
@@ -167,7 +187,7 @@ export default function PricingV1({ campaignId, onPaymentStart, onPaymentSuccess
                     <span className="pl-1 text-sm text-gray-400">One-time payment</span>
                   </div>
                   <div className="text-sm text-gray-300">
-                    Unlock all the leads information in one click, automate outreach.
+                    Unlock all the leads information in one click, automate outreach from CSV.
                   </div>
                 </div>
                 <ul className="grow space-y-2 text-sm text-gray-400">

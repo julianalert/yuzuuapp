@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react'
 import { supabase } from '../../lib/supabase'
 import PaymentHandler from '../payment-handler'
+import CtaCopy from '../cta-copy'
 
 // LinkedIn SVG icon
 function LinkedInIcon(props: React.SVGProps<SVGSVGElement>) {
@@ -98,6 +99,19 @@ export default function CampaignLeads({ campaignId }: { campaignId: string }) {
       .replace(/^\d+\.\s+/gm, '• ') // Convert numbered lists to bullet points
       .replace(/\n\n/g, '\n') // Remove extra line breaks
       .trim()
+  }
+
+  const createTeasedEmail = (email: string) => {
+    if (!email) return null;
+    
+    const [localPart, domain] = email.split('@');
+    if (!localPart || !domain) return null;
+    
+    // Show first 2-3 characters of local part, then ***
+    const visibleChars = Math.min(3, Math.max(2, localPart.length));
+    const teasedLocal = localPart.substring(0, visibleChars) + '***';
+    
+    return `${teasedLocal}@${domain}`;
   }
 
   const exportCsv = async () => {
@@ -409,7 +423,7 @@ export default function CampaignLeads({ campaignId }: { campaignId: string }) {
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-200 bg-white">
-              {leads.map((lead) => (
+              {leads.map((lead, index) => (
                 <React.Fragment key={lead.id}>
                   <tr className="hover:bg-gray-50">
                     <td className="py-5 pr-3 pl-4 text-sm whitespace-nowrap sm:pl-6">
@@ -508,9 +522,20 @@ export default function CampaignLeads({ campaignId }: { campaignId: string }) {
                     {campaign?.paid_status ? (
                       lead.lead_email || '-'
                     ) : (
-                      <div className="flex items-center gap-2 text-gray-500">
-                        <LockIcon className="h-4 w-4" style={{ color: '#ffc123' }} />
-                        <span>Locked</span>
+                      <div className="flex items-center gap-2">
+                        {lead.lead_email && createTeasedEmail(lead.lead_email) ? (
+                          <>
+                            <span className="text-gray-700 font-mono">
+                              {createTeasedEmail(lead.lead_email)}
+                            </span>
+                            <LockIcon className="h-3 w-3" style={{ color: '#ffc123' }} />
+                          </>
+                        ) : (
+                          <>
+                            <LockIcon className="h-4 w-4" style={{ color: '#ffc123' }} />
+                            <span className="text-gray-500">Locked</span>
+                          </>
+                        )}
                       </div>
                     )}
                   </td>
@@ -571,6 +596,16 @@ export default function CampaignLeads({ campaignId }: { campaignId: string }) {
                               </div>
                             </>
                           )}
+                        </div>
+                      </td>
+                    </tr>
+                  )}
+                  {/* Insert CTA after 4th lead */}
+                  {index === 3 && !campaign?.paid_status && (
+                    <tr>
+                      <td colSpan={5} className="px-0 py-8">
+                        <div className="mx-4 sm:mx-6">
+                          <CtaCopy campaignId={campaign?.id} />
                         </div>
                       </td>
                     </tr>

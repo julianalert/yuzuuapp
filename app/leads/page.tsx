@@ -1,5 +1,6 @@
 import PageIllustration from "../../components/page-illustration";
 import CampaignLeads from '@/components/dashboard/campaign-leads'
+import SuccessStats from '@/components/success-stats'
 
 export const metadata = {
   title: "Leads - Yuzuu",
@@ -86,6 +87,9 @@ export default async function Leads({ searchParams }: { searchParams: Promise<{ 
           <div className="pb-12">
             <CampaignLeads campaignId={campaignId} />
           </div>
+          
+          {/* Success Stats */}
+          <SuccessStats />
         </div>
       </div>
     </section>
