@@ -4,6 +4,8 @@ import React, { useState, useEffect } from 'react'
 import { supabase } from '../../lib/supabase'
 import PaymentHandler from '../payment-handler'
 import CtaCopy from '../cta-copy'
+import ROICalculator from '../roi-calculator'
+import SuccessStats from '../success-stats'
 
 // LinkedIn SVG icon
 function LinkedInIcon(props: React.SVGProps<SVGSVGElement>) {
@@ -600,8 +602,18 @@ export default function CampaignLeads({ campaignId }: { campaignId: string }) {
                       </td>
                     </tr>
                   )}
-                  {/* Insert CTA after 4th lead */}
+                  {/* Insert ROI Calculator after 4th lead */}
                   {index === 3 && !campaign?.paid_status && (
+                    <tr>
+                      <td colSpan={5} className="px-0 py-8">
+                        <div className="mx-4 sm:mx-6">
+                          <ROICalculator totalLeads={totalLeads} />
+                        </div>
+                      </td>
+                    </tr>
+                  )}
+                  {/* Insert CTA after 7th lead */}
+                  {index === 6 && !campaign?.paid_status && (
                     <tr>
                       <td colSpan={5} className="px-0 py-8">
                         <div className="mx-4 sm:mx-6">
@@ -627,6 +639,13 @@ export default function CampaignLeads({ campaignId }: { campaignId: string }) {
             {loadingMore ? 'Loading...' : 'Load more'} {" "}
             <span className="ml-2 tracking-normal text-gray-500">↓</span>
           </button>
+        </div>
+      )}
+
+      {/* Success Stats - Only show for unpaid campaigns */}
+      {!campaign?.paid_status && (
+        <div className="mt-12">
+          <SuccessStats />
         </div>
       )}
     </div>

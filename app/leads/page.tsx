@@ -87,9 +87,6 @@ export default async function Leads({ searchParams }: { searchParams: Promise<{ 
           <div className="pb-12">
             <CampaignLeads campaignId={campaignId} />
           </div>
-          
-          {/* Success Stats */}
-          <SuccessStats />
         </div>
       </div>
     </section>
