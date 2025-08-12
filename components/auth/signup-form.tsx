@@ -65,19 +65,27 @@ export default function SignUpForm() {
             if (!campaignId) {
               // Create campaign if not exists
               console.log('Creating campaign for user:', user.id, 'url:', urlFromQuery);
-              const { data, error: campaignError } = await supabase.from('campaign').insert([
-                {
+              
+              const response = await fetch('/api/create-campaign', {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
                   url: urlFromQuery,
                   email: user.email,
                   user_id: user.id,
-                }
-              ]).select();
-              if (campaignError) {
+                }),
+              });
+
+              if (!response.ok) {
                 setError('Could not create campaign');
-                console.error('Campaign creation error:', campaignError);
+                console.error('Campaign creation error:', await response.text());
                 return;
               }
-              campaignId = data && data[0] && data[0].id ? data[0].id : null;
+
+              const { campaign } = await response.json();
+              campaignId = campaign?.id;
               console.log('Created campaign, id:', campaignId);
             } else {
               console.log('Campaign already exists, id:', campaignId);

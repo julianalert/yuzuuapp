@@ -27,31 +27,29 @@ export default function MainCTANoAccount() {
       try {
         console.log('Creating campaign for:', { websiteUrl, email });
         
-        if (!supabase) {
-          throw new Error('Supabase not configured');
+        // Create campaign via API endpoint
+        const response = await fetch('/api/create-campaign', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            url: websiteUrl.trim(),
+            email: email.trim(),
+            user_id: null, // No user_id since this is pre-signup
+          }),
+        });
+
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(errorData.error || 'Failed to create campaign');
         }
-        
-        // Create campaign in Supabase
-        const { data, error } = await supabase
-          .from('campaign')
-          .insert([
-            {
-              url: websiteUrl.trim(),
-              email: email.trim(),
-              user_id: null, // No user_id since this is pre-signup
-            }
-          ])
-          .select();
-        
-        if (error) {
-          console.error('Error creating campaign:', error);
-          throw error;
-        }
-        
-        console.log('Campaign created successfully:', data);
+
+        const { campaign } = await response.json();
+        console.log('Campaign created successfully:', campaign);
         
         // Get campaign ID for redirect
-        const campaignId = data[0]?.id;
+        const campaignId = campaign?.id;
         
         // Trigger webhook with campaign data
         try {
