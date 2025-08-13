@@ -59,7 +59,7 @@ export default function Header() {
 
           
           <ul className="flex flex-1 items-center justify-end gap-3">
-            {/*<li>
+            <li>
               <Link
                 href="/signin"
                 className="btn-sm bg-white text-gray-800 shadow-sm hover:bg-gray-50"
@@ -72,17 +72,17 @@ export default function Header() {
                 href="/signup"
                 className="btn-sm bg-gray-800 text-gray-200 shadow-sm hover:bg-gray-900"
               >
-                Register
+                Sign up
               </Link>
-            </li>*/}
-            <li>
+            </li>
+            {/*<li>
               <Link
                 href="#"
                 className="btn-sm bg-gray-800 text-gray-200 shadow-sm hover:bg-gray-900"
               >
                 Get free leads now
               </Link>
-            </li>
+            </li>*/}
           </ul>
 
           <MobileMenu />

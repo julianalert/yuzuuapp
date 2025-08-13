@@ -47,14 +47,6 @@ export default function DashboardHeader() {
                 Sign Out
               </button>
             </li>
-            <li>
-              <Link
-                href="#"
-                className="btn-sm bg-gray-800 text-gray-200 shadow-sm hover:bg-gray-900"
-              >
-                Create a new campaign
-              </Link>
-            </li>
           </ul>
 
           {/*<MobileMenu />*/}

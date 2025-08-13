@@ -2,23 +2,53 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { supabase } from '@/lib/supabase';
+import { useAuth } from '@/lib/auth-context';
 
-export default function MainCTA() {
+interface MainCTAProps {
+  onCampaignCreated?: () => void;
+}
+
+export default function MainCTA({ onCampaignCreated }: MainCTAProps) {
   const [websiteUrl, setWebsiteUrl] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const router = useRouter();
+  const { user } = useAuth();
 
   const handleWebsiteSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (websiteUrl.trim() && !isSubmitting) {
       setIsSubmitting(true);
       try {
-        // Redirect to signup page with url as query string
-        router.push(`/signup?url=${encodeURIComponent(websiteUrl.trim())}`);
+        if (user) {
+          // Create campaign directly if user is logged in
+          const response = await fetch('/api/create-campaign', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              url: websiteUrl.trim(),
+              email: user.email,
+              user_id: user.id
+            }),
+          });
+
+          if (!response.ok) {
+            throw new Error('Failed to create campaign');
+          }
+
+          // Clear the input and notify parent component
+          setWebsiteUrl('');
+          onCampaignCreated?.();
+        } else {
+          // Redirect to signup page with url as query string if not logged in
+          router.push(`/signup?url=${encodeURIComponent(websiteUrl.trim())}`);
+        }
       } catch (error) {
         console.error('Unexpected error:', error);
-        router.push('/signup');
+        if (!user) {
+          router.push('/signup');
+        }
       } finally {
         setIsSubmitting(false);
       }
