@@ -4,11 +4,42 @@ import { useSearchParams } from 'next/navigation';
 import { usePricingModal } from "@/lib/pricing-modal-context";
 import PaymentHandler from "@/components/payment-handler";
 import Logo from "./logo";
+import { useEffect, useState } from 'react';
+import { supabase } from '@/lib/supabase';
 
 export default function LeadsHeaderClient() {
   const searchParams = useSearchParams();
   const campaignId = searchParams.get('campaignId');
   const { openModal } = usePricingModal();
+  const [isPaid, setIsPaid] = useState(false);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const checkPaidStatus = async () => {
+      if (!campaignId || !supabase) return;
+
+      try {
+        const { data: campaign, error } = await supabase
+          .from('campaign')
+          .select('paid_status')
+          .eq('id', campaignId)
+          .single();
+
+        if (error) {
+          console.error('Error fetching campaign status:', error);
+          return;
+        }
+
+        setIsPaid(campaign?.paid_status || false);
+      } catch (error) {
+        console.error('Error:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    checkPaidStatus();
+  }, [campaignId]);
 
   return (
     <header className="fixed top-2 z-30 w-full md:top-6">
@@ -20,7 +51,7 @@ export default function LeadsHeaderClient() {
           </div>
 
           {/* Payment Handler */}
-          {campaignId && (
+          {campaignId && !loading && !isPaid && (
             <div className="flex-shrink-0">
               <button
                 onClick={openModal}

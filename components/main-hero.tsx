@@ -7,7 +7,7 @@ import Avatar03 from "@/public/images/avatar-03.jpg";
 import Avatar04 from "@/public/images/avatar-04.jpg";
 import Avatar05 from "@/public/images/avatar-05.jpg";
 import Avatar06 from "@/public/images/avatar-06.jpg";
-import PreviewImage from "@/public/images/preview.png";
+import PreviewImage from "@/public/images/preview3.png";
 
 export default function MainHero() {
   return (
