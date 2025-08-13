@@ -26,7 +26,7 @@ export default function StickyUnlockButton({ campaignId, isPaid }: StickyUnlockB
               className="btn group bg-linear-to-t from-blue-600 to-blue-500 bg-[length:100%_100%] bg-[bottom] text-white shadow-sm hover:bg-[length:100%_150%] px-8 py-3"
             >
               <span className="relative inline-flex items-center">
-                🔓 Unlock All Leads - $47{' '}
+                🔓 Unlock All Leads - $27{' '}
                 <span className="ml-1 tracking-normal text-blue-300 transition-transform group-hover:translate-x-0.5">
                   →
                 </span>

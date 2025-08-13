@@ -7,6 +7,7 @@ import CtaCopy from '../cta-copy'
 import ROICalculator from '../roi-calculator'
 import SuccessStats from '../success-stats'
 import StickyUnlockButton from '../sticky-unlock-button'
+import LeadsHeaderStats from './leads-header-stats'
 
 // LinkedIn SVG icon
 function LinkedInIcon(props: React.SVGProps<SVGSVGElement>) {
@@ -344,64 +345,14 @@ export default function CampaignLeads({ campaignId }: { campaignId: string }) {
 
   return (
     <div className="mx-auto max-w-6xl">
-      <div className="mb-8 flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
-        <div>
-          <h2 className="text-2xl font-bold text-gray-900 mb-2">
-            {totalLeads} Leads 
-          </h2>
-          <p className="text-gray-600">
-          From {displayUrl}
-          </p>
-        </div>
-        <div className="flex-shrink-0">
-          {campaign?.paid_status ? (
-            <button
-              onClick={exportCsv}
-              disabled={exportingCsv}
-              className="btn bg-gray-800 font-normal text-gray-200 shadow-sm hover:bg-gray-900 disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              <svg
-                className="mr-2 fill-gray-500"
-                xmlns="http://www.w3.org/2000/svg"
-                width={16}
-                height={16}
-              >
-                <path d="M14 2H6a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2zM6 4h8v2H6V4zm0 4h8v2H6V8zm0 4h6v2H6v-2z"/>
-              </svg>
-              {exportingCsv ? 'Exporting...' : 'Export as CSV'}
-            </button>
-          ) : (
-            <div className="flex flex-col sm:flex-row gap-2">
-              <button
-                disabled
-                className="btn bg-gray-800 font-normal text-gray-200 shadow-sm opacity-50 cursor-not-allowed"
-              >
-                <svg
-                  className="mr-2 fill-gray-500"
-                  xmlns="http://www.w3.org/2000/svg"
-                  width={16}
-                  height={16}
-                >
-                  <path d="M14 2H6a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2zM6 4h8v2H6V4zm0 4h8v2H6V8zm0 4h6v2H6v-2z"/>
-                </svg>
-                Export as CSV
-                <LockIcon className="ml-2 h-3 w-3" style={{ color: '#ffc123' }} />
-              </button>
-              <PaymentHandler 
-                campaignId={campaignId}
-                onSuccess={() => {
-                  // Refresh the page to show updated paid status
-                  window.location.reload();
-                }}
-                onError={(error) => {
-                  console.error('Payment error:', error);
-                  // You could add a toast notification here
-                }}
-              />
-            </div>
-          )}
-        </div>
-      </div>
+      <LeadsHeaderStats 
+        totalLeads={totalLeads}
+        displayUrl={displayUrl}
+        isPaid={campaign?.paid_status || false}
+        onExport={exportCsv}
+        isExporting={exportingCsv}
+        leads={leads}
+      />
 
       <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
         <div className="overflow-x-auto">
@@ -623,6 +574,16 @@ export default function CampaignLeads({ campaignId }: { campaignId: string }) {
                       </td>
                     </tr>
                   )}
+                  {/* Insert Success Stats after 12th lead */}
+                  {index === 11 && !campaign?.paid_status && (
+                    <tr>
+                      <td colSpan={5} className="px-0 py-8">
+                        <div className="mx-4 sm:mx-6">
+                          <SuccessStats />
+                        </div>
+                      </td>
+                    </tr>
+                  )}
                 </React.Fragment>
               ))}
             </tbody>
@@ -640,13 +601,6 @@ export default function CampaignLeads({ campaignId }: { campaignId: string }) {
             {loadingMore ? 'Loading...' : 'Load more'} {" "}
             <span className="ml-2 tracking-normal text-gray-500">↓</span>
           </button>
-        </div>
-      )}
-
-      {/* Success Stats - Only show for unpaid campaigns */}
-      {!campaign?.paid_status && (
-        <div className="mt-12">
-          <SuccessStats />
         </div>
       )}
 

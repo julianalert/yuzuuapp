@@ -15,7 +15,10 @@ export default function PricingV1({ campaignId, onPaymentStart, onPaymentSuccess
   const [loading, setLoading] = useState(false);
 
   const handlePayment = async () => {
-    if (!campaignId) return;
+    if (!campaignId) {
+      onPaymentError?.('Campaign ID is required');
+      return;
+    }
     
     setLoading(true);
     onPaymentStart?.();
@@ -30,22 +33,28 @@ export default function PricingV1({ campaignId, onPaymentStart, onPaymentSuccess
         body: JSON.stringify({ campaignId }),
       });
 
-      const { sessionId, error } = await response.json();
+      const data = await response.json();
 
-      if (error) {
-        throw new Error(error);
+      if (!response.ok) {
+        throw new Error(data.error || `HTTP error! status: ${response.status}`);
+      }
+
+      if (!data.sessionId) {
+        throw new Error('No session ID returned from server');
       }
 
       // Redirect to Stripe checkout
       const stripe = await getStripe();
-      if (stripe) {
-        const { error: stripeError } = await stripe.redirectToCheckout({
-          sessionId,
-        });
+      if (!stripe) {
+        throw new Error('Failed to load Stripe');
+      }
 
-        if (stripeError) {
-          throw new Error(stripeError.message);
-        }
+      const { error: stripeError } = await stripe.redirectToCheckout({
+        sessionId: data.sessionId,
+      });
+
+      if (stripeError) {
+        throw new Error(stripeError.message);
       }
     } catch (error) {
       console.error('Payment error:', error);
@@ -182,7 +191,7 @@ export default function PricingV1({ campaignId, onPaymentStart, onPaymentSuccess
                   <div className="mb-4 flex items-baseline border-b border-dashed border-gray-600 pb-4">
                     <span className="text-2xl font-bold text-gray-200">$</span>
                     <span className="text-4xl font-bold tabular-nums text-gray-200">
-                      47
+                      27
                     </span>
                     <span className="pl-1 text-sm text-gray-400">One-time payment</span>
                   </div>
@@ -291,7 +300,7 @@ export default function PricingV1({ campaignId, onPaymentStart, onPaymentSuccess
                   <div className="mb-4 flex items-baseline border-b border-dashed border-gray-200 pb-4">
                     <span className="text-2xl font-bold">$</span>
                     <span className="text-4xl font-bold tabular-nums">
-                      147
+                      97
                     </span>
                     <span className="pl-1 text-sm text-gray-500">One-time payment</span>
                   </div>

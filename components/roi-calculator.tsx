@@ -11,7 +11,7 @@ export default function ROICalculator({ totalLeads = 100 }: ROICalculatorProps) 
   const [averageDealValue, setAverageDealValue] = useState(500);
   const [calculatedROI, setCalculatedROI] = useState({ revenue: 0, roi: 0, convertedLeads: 0 });
 
-  const investmentCost = 47; // One-time payment
+  const investmentCost = 27; // One-time payment
 
   useEffect(() => {
     const convertedLeads = Math.floor((totalLeads * conversionRate) / 100);

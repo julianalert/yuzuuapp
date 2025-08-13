@@ -13,10 +13,6 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Create Stripe checkout session
-    console.log('STRIPE_SECRET_KEY exists:', !!process.env.STRIPE_SECRET_KEY);
-    console.log('STRIPE_SECRET_KEY length:', process.env.STRIPE_SECRET_KEY?.length);
-    
     const stripe = getStripeServer();
     if (!stripe) {
       return NextResponse.json(
@@ -25,6 +21,9 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    // Log the request URL for debugging
+    console.log('Request URL:', request.nextUrl.origin);
+
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ['card'],
       line_items: [
@@ -32,10 +31,10 @@ export async function POST(request: NextRequest) {
           price_data: {
             currency: 'usd',
             product_data: {
-              name: 'Campaign Unlock',
-              description: 'Unlock all lead information for your campaign',
+              name: 'Unlock All Leads',
+              description: 'Get instant access to all lead information, including emails, phone numbers, and AI-generated warm intros.',
             },
-            unit_amount: 4700, // $47.00 in cents
+            unit_amount: 2700, // $27.00 in cents
           },
           quantity: 1,
         },
@@ -46,13 +45,43 @@ export async function POST(request: NextRequest) {
       metadata: {
         campaignId: campaignId,
       },
+      // Customize the look and feel
+      custom_text: {
+        submit: {
+          message: 'We will instantly unlock your leads after payment.'
+        },
+      },
+      // Add business information
+      payment_intent_data: {
+        description: 'Yuzuu Marketing - Lead Access',
+      },
+      // Customize customer information collection
+      billing_address_collection: 'auto',
+      allow_promotion_codes: true,
+      locale: 'en',
     });
 
     return NextResponse.json({ sessionId: session.id });
-  } catch (error) {
-    console.error('Error creating checkout session:', error);
+  } catch (error: any) {
+    console.error('Detailed error:', error);
+    
+    // Return more specific error messages
+    if (error?.type === 'StripeInvalidRequestError') {
+      return NextResponse.json(
+        { error: `Stripe Error: ${error.message}` },
+        { status: 400 }
+      );
+    }
+
+    if (error?.code === 'ECONNREFUSED') {
+      return NextResponse.json(
+        { error: 'Could not connect to Stripe. Please check your internet connection.' },
+        { status: 503 }
+      );
+    }
+
     return NextResponse.json(
-      { error: 'Failed to create checkout session' },
+      { error: error?.message || 'Failed to create checkout session' },
       { status: 500 }
     );
   }
