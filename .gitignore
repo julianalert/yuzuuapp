@@ -34,3 +34,7 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# catalyst-ui-kit demos
+/catalyst-ui-kit/demo/
+/catalyst-ui-kit/demo/**/*

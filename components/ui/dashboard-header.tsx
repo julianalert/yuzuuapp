@@ -31,14 +31,14 @@ export default function DashboardHeader() {
 
           {/* Navigation and buttons */}
           <ul className="flex items-center gap-3">
-            <li className="px-3 py-1">
+            {/*<li className="px-3 py-1">
               <Link
                 href="/dashboard"
                 className="flex items-center text-gray-700 transition hover:text-gray-900"
               >
                 Settings
               </Link>
-            </li>
+            </li> */}
             <li className="px-3 py-1">
               <button
                 onClick={handleSignOut}
